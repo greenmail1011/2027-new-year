@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>時光廚房排練本</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style id="page-style">
+:root{
+  color-scheme:light;
+  --bg:#F5F7F4; --surface:#FFFFFF; --ink:#1F2622; --muted:#5F6A63; --line:#E0E5DF;
+  --accent:#C4362B; --accent-soft:#FDECE9; --act:#2E7560; --hit:#FFF0C2; --edit:#FFFBEA;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.75;margin:0}
+.wrap{max-width:820px;margin:0 auto;padding-inline:16px;padding-block:28px 72px}
+header.top{display:grid;gap:10px;padding-bottom:18px}
+.eyebrow{font-size:13px;letter-spacing:.12em;color:var(--muted)}
+h1{font-family:var(--serif);font-size:clamp(28px,6vw,40px);line-height:1.25;margin:0;text-wrap:balance;letter-spacing:.02em}
+h1 .mark{color:var(--accent)}
+.vrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--muted)}
+.pill{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 10px;font-size:13px;background:var(--surface)}
+.vrow a{color:var(--accent);text-underline-offset:3px}
+.intro{font-size:15px;color:var(--muted);display:grid;gap:4px}
+.intro p{margin:0}
+.intro strong{color:var(--ink)}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-inline:-16px;padding:10px 16px;display:grid;gap:8px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.barrow{display:flex;justify-content:space-between;align-items:center;gap:8px 12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tool{font:inherit;font-size:13px;background:none;border:0;color:var(--accent);cursor:pointer;padding:2px 4px}
+.btn{font:inherit;font-size:14px;border-radius:8px;padding:5px 14px;cursor:pointer;border:1px solid var(--accent);background:var(--surface);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.editbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;background:var(--edit);border:1px solid #F0DFA0;border-radius:10px;padding:8px 12px;font-size:13px;color:var(--ink)}
+.editbar .msg{flex:1 1 220px}
+.notice{border-radius:10px;padding:8px 12px;font-size:14px;background:var(--accent-soft);color:var(--ink);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.part{margin-top:30px}
+.part h2{font-family:var(--serif);font-size:24px;margin:0 0 10px;display:flex;align-items:baseline;gap:12px}
+.plabel{font-family:var(--sans);font-size:12px;letter-spacing:.14em;color:var(--accent);font-weight:500}
+.appx h2{color:var(--muted)}
+
+details.l3{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+details.l3 + details.l3{margin-top:10px}
+summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:14px 0}
+summary::-webkit-details-marker{display:none}
+.st{font-family:var(--serif);font-weight:600;font-size:18px;flex:1;text-wrap:balance}
+details.l4 > summary .st{font-size:16px}
+.meta{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:999px;padding:0 9px;white-space:nowrap}
+.chev{width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s;flex:none;margin:0 4px 4px}
+details[open] > summary .chev{transform:rotate(-135deg);margin-bottom:-2px}
+.body{padding:0 0 16px;display:grid;gap:6px}
+details.l4{background:var(--bg);border-radius:10px;padding:0 12px}
+details.l4 + details.l4{margin-top:8px}
+details.l4 > .body{padding-bottom:12px}
+
+p{margin:0}
+.line{padding:4px 8px;border-radius:6px;transition:opacity .2s,background-color .2s}
+.dlg{display:grid;grid-template-columns:4.4em 1fr;gap:12px;align-items:baseline}
+.dlg.long{grid-template-columns:1fr;gap:0}
+.spk{font-family:var(--serif);font-weight:700;color:var(--ink);white-space:nowrap}
+.dlg.long .spk{white-space:normal}
+.spk .sub{font-family:var(--sans);font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+.act{color:var(--act);font-size:15px}
+@media (min-width:560px){.act,.cueline{margin-left:calc(4.4em + 12px)}}
+.cueline{font-size:14px;color:var(--muted)}
+.cue{display:inline-block;font-size:.8em;line-height:1.5;color:var(--accent);border:1px solid #EDB5AE;background:#FFF7F5;border-radius:4px;padding:0 6px;margin:0 2px;vertical-align:1px}
+.tone{color:var(--muted);font-size:.88em}
+.tone::before{content:"〔"}.tone::after{content:"〕"}
+.tr{display:block;color:var(--muted);font-size:13px;line-height:1.6}
+.inact{color:var(--act);font-size:.92em}
+h5.beat{margin:14px 0 2px;font-size:13px;letter-spacing:.08em;color:var(--accent);font-weight:700}
+ul.steps{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+ul.steps li{display:grid;grid-template-columns:auto 1fr;gap:10px}
+ul.steps li.plain{grid-template-columns:1fr}
+.tc{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);white-space:nowrap;padding-top:3px;min-width:5.6em}
+ol{margin:0;padding-left:1.4em;display:grid;gap:4px}
+ul.todo{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+ul.todo li{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start}
+.box{width:14px;height:14px;border:1.5px solid var(--muted);border-radius:3px;margin-top:6px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line);min-width:5em}
+th{font-weight:700;color:var(--muted);font-size:13px;white-space:nowrap;background:#FAFBF9}
+tr:last-child td{border-bottom:0}
+strong{font-weight:700}
+body.has-role .script .line.dim{opacity:.35}
+body.has-role .script .line.hit{background:var(--hit);opacity:1}
+
+/* 編輯模式 */
+.src{display:block;outline:1px dashed #C9CFC8;border-radius:6px;background:var(--edit);padding:4px 8px;white-space:pre-wrap;cursor:text}
+body.editing .dlg{grid-template-columns:1fr;gap:4px}
+body.editing .act,body.editing .cueline{margin-left:0}
+.hint-wide{display:none}
+@media (min-width:560px){.hint-wide{display:inline}}
+.src:focus{outline:2px solid var(--accent);background:#fff}
+.src:empty::before{content:"（輸入內容）";color:var(--muted)}
+.edrow{display:flex;gap:8px;align-items:flex-start}
+.edrow > .grow{flex:1;min-width:0}
+.edt{display:flex;gap:4px;flex:none;opacity:.55}
+.edrow:hover .edt,.edrow:focus-within .edt{opacity:1}
+.eb{font:inherit;font-size:12px;line-height:1;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;padding:4px 7px;cursor:pointer}
+.eb:hover{color:var(--accent);border-color:var(--accent)}
+.spsel{font:inherit;font-family:var(--serif);font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);padding:1px 2px;max-width:100%}
+.changed{box-shadow:inset 3px 0 0 #E2B23C}
+.foot{margin-top:40px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div id="root"></div>
+<script type="application/json" id="src">{"version": "第二版（15 分鐘版）", "docUrl": "https://docs.google.com/document/d/1j2A1Kq2TbPMsNpm02q5qobLce7H6NZfRjAEzD6QW_AM/edit", "edited": "2026/9/25 20:16:39", "md": "# 《老壇主的時光廚房》2027新春團拜版｜排練劇本\n\n版本：2026-09-25 第二版（15 分鐘版）\n\n**怎麼看這一頁**：第一部分是劇本，演員和編舞只要看這部分；第二部分是附錄，放時間表、道具、發放分工、人員核對與待確認事項，給籌備團隊用。\n\n**第二版修訂重點**：依 9/25 指示，台上節目從約 17 分 10 秒縮為約 **14 分 50 秒**，保留走位、換場等動作所需時間。主線完全保留；刪掉的內容列在附錄 G，排練後若時間有餘可以加回來。\n\n## 第一部分｜劇本\n\n### 演出總覽\n\n| 段落 | 時間 | 長度 | 誰在台上 |\n| --- | --- | --- | --- |\n| 一、威武門神登場 | 00:00–01:00 | 1:00 | 主門神 2 位 |\n| 二、歡樂大掃除 | 01:00–03:00 | 2:00 | 阿嬤一家、大掃除群演；場下小門神 |\n| 三、溫馨家庭話劇 | 03:00–12:20 | 約 9:20 | 阿嬤一家、春嬌、主門神 2 位 |\n| 四、歡樂門神壓軸 | 12:20–14:50 | 2:30 | 門神 10 位＋小門神 2 位、話劇演員 |\n| 全場發放禮品 | 14:50 起 | 視人數 | 門神、發送組 |\n\n### 角色一覽\n\n| 角色 | 演員 | 一句話 |\n| --- | --- | --- |\n| 陳老壇主（阿嬤） | 李冠德（反串） | 做蘿蔔糕結善緣，帶全家去家訪 |\n| 阿誠（爸爸） | 【待確認】 | 阿嬤的兒子，憨厚、負責出力跑腿 |\n| 麗玲（媽媽） | 蔡梅烽（依原表括註） | 阿嬤的媳婦，開朗、會安排分工 |\n| 小寶（孫子） | 【待確認】 | 愛吃，「吹蘿蔔糕」「邊邊」笑點 |\n| 妞妞（孫女） | 蘇湘澄 | 細心、愛幫忙 |\n| 春嬌（受家訪者） | 張素環 | 巷口默默行善的鄰居道親 |\n| 主門神甲、乙 | 黃家倍、彭永才（編排假設，待確認） | 阿嬤家的門神，無聲 |\n| 門神群、小門神 | 見附錄 D | 壓軸登場，無聲 |\n\n### 排練符號與全劇規則\n\n- 「角色：台詞」為實際唸出的對白；〔〕內是說話語氣；（）是舞台動作；【】是音樂、音效、上下場、定格與道具提示。\n- 台語句後的〔譯：…〕是給演員看的國語意思，不唸出來。台語用字可依李冠德習慣的說法調整。\n- 左區／右區一律以**觀眾視角**為準。左區＝阿嬤家灶腳，右區＝春嬌家，中央＝巷子兼舞蹈區。\n- **門神規則**：劇中人物看不見門神，只有觀眾看得見。人物說話時，門神只在句與句之間做小反應；較長的門神表演一律用「暫停鍵」。\n- **暫停鍵**：【鏘】第一聲，所有人物立刻定格（眼睛可眨，身體不動），只有門神動。【鏘】第二聲，人物從定格的位置接著演，門神必須已回到位置。全劇共 2 個暫停鍵。\n- 「後台人員」指道具交接人力，**待指定**，不預設由任何幕後職司者擔任。\n\n### 第一階段｜威武門神登場（1:00）\n\n【舞台淨空。主門神甲（黃家倍）在左側翼、主門神乙（彭永才）在右側翼候場。】\n\n【M1 門神威武版起。】\n\n- 0:00–0:08｜揚琴前奏，舞台空著，讓觀眾安靜下來。\n- 0:08–0:18｜【上】兩位主門神自左右兩側同時上場，踏著重拍一拍一步走大台步，在中央相距兩步處面對面停下。\n- 0:18｜頓挫點 1：兩人同時轉向觀眾、抱拳。【定格 1】\n- 0:20–0:40｜對稱武術動作兩個八拍：弓步推掌 → 轉身甩披風 → 手勢或兵器道具高舉（依服裝道具組準備）→ 馬步。動作大、慢、穩，細節由江敏娟編排。\n- 0:40｜頓挫點 2：背靠背亮相。【定格 2】\n- 0:42–0:52｜兩人踏台步回到舞台中央，肩並肩面向觀眾，雙臂交叉在胸前，成為「兩扇關著的大門」。阿嬤趁這段時間從左側翼彎腰躲到兩人身後（能不能遮住，由江敏娟與戲劇組在彩排時確認）。\n- 0:52–1:00｜頓挫點 3：兩人以外側的腳為軸，像兩扇門板一樣同時向外旋開（甲向左、乙向右），停在開門迎客的手勢，阿嬤就站在門中間。【定格 3：開門】【M1 收】\n\n（替代做法：阿嬤遮不住時不躲在門後，改在開門那一拍從左側翼大步走進兩人中間。之後主門神在第二階段前奏退到守護位（甲在舞台左前緣、乙在舞台右前緣，不擋到左區、右區與中央，彩排時貼地標），直到 3-1 結尾。沒有指定動作時，可收成較放鬆的「站班姿」：雙手交疊、目視前方、不走動。）\n\n### 第二階段｜歡樂大掃除（2:00）\n\n【M2 大掃除恰恰起。前奏雞啼。】\n\n- 0:00–0:05｜M1 開門的最後一拍直接接 M2 前奏。阿嬤拿雞毛撢子從門中間跨出一大步，對左側翼拍兩下手。兩位主門神同時退到左右前緣守護位。落拍定格。【定格：守護姿】\n\n阿嬤：〔拉高嗓門〕起床囉！年欲到囉，大掃除啦！〔譯：年要到了〕\n\n- 0:05–0:20｜【上】阿誠（拖把）、麗玲（抹布）、小寶、妞妞（小掃把）從左側小跑步上場，在中央前排兩兩面對面，跳恰恰基本步。阿嬤在最前面拿雞毛撢子當指揮棒打拍子。\n- 0:20–0:50｜主歌一。【上】群演第一組（拿掃帚）從右側恰恰進場，排在後排。歌詞唱到掃地時，第一組做掃地動作，其他人繼續恰恰。\n- 0:50–1:20｜主歌二接副歌。【上】群演第二組（拿拖把、抹布）從左側進場。歌詞唱到擦、拖時換第二組做動作。副歌全體恰恰轉一圈。\n- 副歌時的門神小笑點：主門神乙的腳偷偷跟著恰恰點兩下，主門神甲轉頭看他一眼，乙馬上站回守護姿。只做一次，不搭舞蹈。\n- 1:20–1:40｜最後副歌：全體排成兩橫排，恰恰向前兩步、向後兩步；最後一拍全體舉起清潔用具亮相。【定格：大掃除完成】\n- 1:40–2:00｜尾奏＝換景（見下方）。\n\n**小門神場下巡視（0:20–1:40）**\n\n- 滑板車版：兩位小門神各從觀眾席後方兩側走道（依場地確認）低速滑入，沿走道向前。途中做「手搭眉檐遠望」的巡視動作、向觀眾抱拳。速度以步行為限，走道有人就停。\n- 替代版（不用滑板車）：同樣路線，改用「巡場台步」——每四拍走三步、第四拍轉頭左右看，偶爾停下對觀眾抱拳。\n- 1:40｜兩人到達舞台前緣，向台上主門神抱拳一禮，【下】從側邊回後台。滑板車由後台人員（待指定）在走道前端接手收走。\n\n**尾奏換景（1:40–2:00）**\n\n- 【下】群演拿著道具分左右下場，邊走邊向觀眾揮手。阿誠的拖把、麗玲的抹布、小寶妞妞的小掃把，交給經過的群演帶下。【道具交接】\n- 阿誠、麗玲從左側翼抬出長桌放在左區；小寶、妞妞各搬一張圓凳。阿嬤把雞毛撢子交給側翼後台人員，接過托盤（蒸籠與桌面小物）放上桌。\n- （可刪）春嬌拿小掃把從右側上，在右區前掃地，彎腰提起一袋回收，右手腕一痛，甩甩手、揉一下，改用左手提著回收【下】。無台詞。\n- 【M2 淡出。阿嬤一家在左區就位。】\n\n### 第三階段｜溫馨家庭話劇（約 9:20）\n\n#### 3-1　阿嬤家的灶腳（約 3:00）\n\n【時間：過年前幾天的早上。地點：左區，阿嬤家灶腳。】\n\n【M3 灶腳襯底輕輕進（可選，音量壓低，不蓋過對白）。】\n\n（阿嬤站在桌後切蘿蔔糕；麗玲擦桌子、排保鮮盒；阿誠一手扶腰靠在桌邊；小寶、妞妞趴在蒸籠兩側。主門神甲、乙在舞台兩側守護位。）\n\n小寶：阿嬤～蘿蔔糕還要蒸多久？我的肚子在打鼓了！（拍肚子「咚、咚、咚」）\n\n阿嬤：乖孫，咱咧炊粿的時陣，毋通黑白講話喔！〔譯：我們蒸粿的時候，不可以亂講話喔〕\n\n小寶：〔一臉認真〕「吹」粿不能講話……（轉頭）妹！阿嬤說要用「吹」的！\n\n妞妞：真的喔？那我也來！\n\n（小寶、妞妞對著蒸籠嘟嘴用力吹。）\n\n小寶：呼～呼～呼～\n\n妞妞：呼～呼～呼～\n\n（主門神甲、乙的披風像被一陣風吹起，兩人身體往後一仰，趕緊用手壓住頭盔，再若無其事站回守護姿。人物都沒看見。）【笑點①：吹蘿蔔糕。停約 2 秒等笑聲】\n\n阿嬤：〔笑出來〕哎唷，阿嬤是講「炊」啦！炊，就是蒸！不是叫你們吹！\n\n阿誠：媽，你看，蒸氣都被他們吹跑了，這籠要蒸到明年了啦。\n\n妞妞：阿嬤說這是要送人的，我們只能吃邊邊。\n\n小寶：（雙手比一個好大的圓）那邊邊切厚一點——切得跟蒸籠一樣大！這樣算邊邊嗎？\n\n阿嬤：這樣是整籠啦！（摸摸兩人的頭）放心，阿嬤有多蒸兩籠，給你們兩隻小饞貓。【笑點②：邊邊跟蒸籠一樣大，停約 2 秒】\n\n阿誠：（揉腰）媽，每年都做這麼多，素粽、蘿蔔糕、甜年糕……你的腰不酸，我的腳都站成蘿蔔腿了。\n\n阿嬤：〔不抬頭，繼續切〕蘿蔔腿好啊！今年蘿蔔糕免買蘿蔔。〔譯：不用買蘿蔔〕【笑點③，停約 2 秒】\n\n（麗玲噗哧笑出來，把毛巾丟給阿誠擦汗。）\n\n麗玲：好啦，蘿蔔腿先生，來，盒子排好。媽這是在結善緣。\n\n阿嬤：修道毋是干焦佇佛堂叩首。人食甲歡喜，過年有溫暖，這嘛是布施。〔譯：修道不是只有在佛堂叩首。人家吃得歡喜，過年有溫暖，這也是布施〕\n\n（阿嬤把切好的蘿蔔糕放進保鮮盒，麗玲邊排邊點。）\n\n麗玲：明叔公一盒、佛堂一大盒……（停住）咦？媽，春嬌姐今年怎麼沒來拿？\n\n阿嬤：（刀子停下來）對喔。春嬌逐年攏第一个來鬥相共，今年哪會連人影都沒看到？〔譯：春嬌每年都是第一個來幫忙，今年怎麼連人影都沒看到〕\n\n妞妞：我昨天有看到春嬌阿姨！她在巷口掃地，手上綁著一個黑黑的東西。\n\n小寶：像護膝，可是綁在手上。\n\n麗玲：護腕？手扭到了？\n\n阿嬤：（放下刀，擦擦手）她每天幫明叔他們送便當，手扭到了還在掃巷口……這個人喔，自己的事攏囥上尾。〔譯：自己的事都放最後〕\n\n妞妞：阿嬤，那誰幫明叔公送便當？\n\n（全家安靜一拍。M3 若有，此時淡出。）\n\n阿嬤：（輕拍一下桌子）走！蘿蔔糕拄好炊好，咱來去春嬌兜看覓！〔譯：蘿蔔糕剛好蒸好，我們去春嬌家看看〕\n\n阿誠：現在？\n\n阿嬤：現在。欲相挺，毋是等人喊救命才去。〔譯：要幫人，不是等人家喊救命才去〕\n\n麗玲：好，我拿提袋。阿誠，蒸籠你搬。\n\n阿誠：〔苦笑〕蘿蔔腿又要出勤了。\n\n（麗玲把保鮮盒收進花布提袋；阿誠抬起蒸籠；阿嬤拿一個保鮮盒特別包好，用麥克筆在盒蓋上寫字。）\n\n小寶：阿嬤，那盒寫什麼？\n\n阿嬤：寫「春嬌」。阿嬤多放兩塊，一塊給她，一塊給她先生。\n\n【鏘——暫停鍵①】（全家定格：阿誠抱著蒸籠、麗玲提著提袋、小寶妞妞拉著阿嬤衣角、阿嬤手按在盒蓋上。）【揚琴短句，約 5 秒】\n\n（主門神甲、乙離開守護位，大步走到桌邊，一左一右彎腰看那盒蘿蔔糕。甲點點頭，對乙比了個大拇指；乙看一眼觀眾，輕輕把甲的大拇指按下去，換成抱拳。兩人一起對阿嬤抱拳一禮，退到全家身後，站成護送隊形。）【小笑點】\n\n【鏘——恢復】\n\n阿嬤：出發！\n\n【M4 過場短句起。】\n\n#### 轉場　巷子（約 0:25）\n\n（全家從左區走進中央「巷子」：阿誠抱蒸籠走前面，麗玲提提袋，小寶、妞妞一左一右牽著阿嬤。主門神甲、乙跟在後面兩步，左右張望，像兩位盡責的保鑣。）\n\n（同一時間，春嬌從右側上場：左手提菜籃，右手戴黑色護腕。她把矮凳放在右區門牌立架旁坐下，把六個便當盒一個個排在腳邊，拿起清單看。她不說話，專心在自己的事上。）【上：春嬌】\n\n（走到舞台中央，阿嬤突然停下。）\n\n阿嬤：等咧！〔譯：等一下〕\n\n（主門神甲差點撞上阿嬤的背，急煞；主門神乙一把拉住甲的披風。兩人立刻站好，抬頭假裝在看天空。阿嬤摸摸口袋，確認金羊還在，點點頭。）【小笑點】\n\n阿嬤：好，行！〔譯：好，走〕\n\n（全家繼續走，停在右區前方約兩步處。主門神甲、乙退到右區兩側後方站定，不擋春嬌與家人的臉。M4 淡出。）\n\n#### 3-2　春嬌家（約 5:25）\n\n【地點：右區，春嬌家門口與客廳。此段是全劇情感重心，除了標明的定格外，門神都不動。】\n\n**① 進門：發現手傷**\n\n麗玲：（對著門牌立架敲三下【敲門聲，可現場敲桌面】）春嬌姐！\n\n春嬌：（急忙把護腕往袖子裡藏，站起來，做開門動作）來了來了——壇主？麗玲？怎麼全家都來了！\n\n阿嬤：來送蘿蔔糕啦。今年妳沒來拿，換阮送來。〔譯：換我們送來〕\n\n春嬌：哎呀，歹勢歹勢，家裡很亂……（伸手要接蒸籠，右手一抬，痛得縮一下）\n\n麗玲：（馬上扶住她的手肘）手怎麼了？\n\n春嬌：沒事沒事，前天搬回收，閃到一下而已。\n\n阿嬤：（輕輕把她按回矮凳）坐。先坐落來。〔譯：先坐下來〕\n\n（阿誠把蒸籠放在春嬌旁邊的地上；麗玲把提袋放下；小寶、妞妞好奇地蹲下來看那一排便當盒。）\n\n**② 春嬌的日常與困難**\n\n妞妞：阿姨，為什麼有這麼多便當盒？\n\n春嬌：這是巷子裡長輩的。明叔、阿桃姨，還有後面那幾位……除夕前，我想幫他們一人準備一份年菜。\n\n小寶：（指著數）一、二、三、四、五、六！六個！\n\n阿誠：六個？妳平常就每天送了，過年還要加菜？\n\n春嬌：他們孩子都在外地，過年一個人吃飯，太冷清了嘛。\n\n（春嬌拿起清單，看了一下，又放下。）\n\n春嬌：本來都算好了……結果手扭到，菜刀都拿不穩。我先生年前跑貨運，天天半夜才回來。婆婆又交代，年夜飯要十二道菜……\n\n（春嬌低下頭，聲音變小。全家安靜聆聽，沒有人插話。）\n\n春嬌：我也不是要誰謝謝我……只是有時候覺得，我做這些，好像都沒有人看見。\n\n【鏘——暫停鍵②】【揚琴單音，輕】（全家與春嬌定格。主門神甲、乙同時轉身面向春嬌，一起對她抱拳、深深一鞠躬，停住三秒，再慢慢站直回位。不要表情誇張，這裡要莊重。）【鏘——恢復】\n\n**③ 有人看見**\n\n阿嬤：（蹲到她身邊，輕輕握住她沒受傷的左手）有人看見啦。\n\n（春嬌抬頭。）\n\n阿嬤：人咧做，天咧看——阮嘛攏有咧看。〔譯：人在做，天在看——我們也都有在看〕\n\n妞妞：我看過！阿姨每天早上都在巷口掃落葉。\n\n小寶：阿姨還幫我撿過滾到水溝邊的球！\n\n春嬌：（眼眶紅了，搖頭笑）你們……怎麼連這種小事都記得。\n\n阿嬤：小事做久，就是大事。妳對大家好，大家攏記佇心肝內。今仔日，換阮來。〔譯：大家都記在心裡。今天，換我們來〕\n\n**④ 分工**\n\n阿嬤：（站起來）麗玲，妳上會安排，妳來排。〔譯：妳最會安排〕\n\n麗玲：（接過春嬌的清單，捲起袖子）好！春嬌姐，妳的手今天只准做一件事——動嘴巴，負責教。\n\n春嬌：教什麼？\n\n麗玲：教我們明叔他們愛吃什麼、不能吃什麼。長輩的年菜，我跟媽來煮。\n\n阿誠：那我呢？\n\n麗玲：六個便當，送六戶，你負責。\n\n阿誠：（拍拍大腿）好啦，蘿蔔腿就是要跑腿的。\n\n小寶：那我們呢？\n\n阿嬤：你們兩個，一戶寫一張「春」字，送便當的時候順便貼，跟長輩說新年快樂。\n\n妞妞：我寫字比較漂亮，我寫！\n\n小寶：那我……負責貼！\n\n（麗玲、阿嬤打開蒸籠，一起把蘿蔔糕分進六個便當盒；阿誠把裝好的盒子疊起來。春嬌坐著，用左手指點。）\n\n春嬌：明叔牙齒不好，蘿蔔糕要切小塊。阿桃姨不能吃太鹹，這盒不要淋醬油膏。\n\n**⑤ 溝通：跟先生說實話**\n\n麗玲：（手沒停）春嬌姐，年夜飯的事……姐夫知道妳手受傷嗎？\n\n春嬌：（搖頭）他那麼累，我不想讓他煩。\n\n阿嬤：毋通按呢。夫妻是一家人，妳不講，他只能用猜的。猜錯了，兩個人都委屈。〔譯：不可以這樣〕\n\n春嬌：可是婆婆那邊……\n\n阿嬤：妳婆婆要十二道，是想要一家人熱熱鬧鬧。菜少一點沒關係，人齊上重要。這句話，讓妳先生去跟他媽媽講，比妳講好。〔譯：人齊最重要〕\n\n麗玲：妳先傳訊息給姐夫，照實講：手受傷了，年夜飯需要他一起想辦法。\n\n（春嬌拿起手機，用左手慢慢打字，小寶、妞妞湊到她肩膀兩邊看。她深吸一口氣，按下送出，把手機放在膝蓋上。）\n\n**⑥ 餘慶：先生的回覆**\n\n【手機「叮」】（春嬌看手機，愣住。）\n\n麗玲：姐夫回了？\n\n春嬌：（唸出來，聲音微微發抖）「老婆，對不起，都沒注意到妳手受傷。我跟老闆說好了，除夕中午就回家。媽那邊我去講，年夜飯我來煮，妳負責坐著。」\n\n阿誠：哇，姐夫有擔當喔！\n\n春嬌：（往下滑，笑出來）還有一句——「幫我謝謝壇主一家。」\n\n阿嬤：（揮揮手）謝啥物。〔譯：謝什麼〕\n\n（阿嬤轉向春嬌，慢慢說。門神不動。）\n\n阿嬤：古早人講「積善之家，必有餘慶」。餘慶毋是天頂落落來的紅包，是妳平常種的善，今仔日變做大家的手，來幫妳。〔譯：餘慶不是天上掉下來的紅包，是妳平常種的善，今天變成大家的手，來幫妳〕\n\n**⑦ 傳承**\n\n春嬌：（站起來，用左手拍拍麗玲的手臂）那明年，換我手好了，我去你們家幫忙做蘿蔔糕。\n\n阿嬤：好啊，阿嬤的配方，教妳。\n\n阿誠：媽，那配方我也要學，我不想每年只負責當蘿蔔腿。\n\n阿嬤：好！明年開始，蘿蔔糕你們做，阿嬤負責——\n\n小寶、妞妞：（搶答）吃邊邊！\n\n小寶：切得跟蒸籠一樣大那種！\n\n阿嬤：（大笑）著！切得跟蒸籠一樣大！〔譯：對！〕【笑點④：邊邊呼應，停約 2 秒】\n\n#### 3-3　過年囉（約 0:30）\n\n（阿嬤從口袋拿出一個金色的小羊吊飾——和壓軸時發給觀眾的是同一款——掛在春嬌的門牌立架上。）\n\n阿嬤：來，這隻金羊掛佇妳門口，結一个善緣——羊年行大運！〔譯：這隻金羊掛在妳家門口，結個善緣〕\n\n春嬌：（摸摸金羊，笑）多謝壇主！\n\n（妞妞拿出紅紙「春」字交給小寶，小寶踮腳貼在門牌立架上。阿誠抱起疊好的六個便當盒，麗玲提起提袋，春嬌站到阿嬤身邊。全體面向觀眾。）\n\n阿嬤：菜分好了，便當裝好了，春字也貼好了——（高舉雙手）大家！過年囉！\n\n全體（阿嬤、阿誠、麗玲、小寶、妞妞、春嬌）：過年囉！\n\n【鏘鏘！鑼鼓直接切入 M5 歡樂門神曲。】\n\n### 第四階段｜歡樂門神壓軸（2:30，台上部分）\n\n【暫按 10 位門神＋2 位小門神設計，總人數待確認。隊形以「兩人一組」為單位，少一組仍可執行（見附錄 G）。每個隊形轉換都落在 M5 的頓挫點上，細部舞步由江敏娟編排。門神分組代號見附錄 D。】\n\n- 0:00–0:10｜話劇演員退到舞台後方兩側：阿誠把便當盒疊在蒸籠上交給右側翼後台人員【道具交接】；春嬌把矮凳搬到右後。六人分站左後、右後，跟拍子拍手，不跳大動作。主門神第 1 組移到中央前方。\n- 0:10–0:35｜入場亮相（每個頓挫點進一組）：頓挫點 1 第 2 組自左側上、頓挫點 2 第 3 組自右側上、頓挫點 3 第 4 組自右側上、頓挫點 4 第 5 組自左側上。每組進場落在頓挫點時抱拳亮相一次。小門神組從觀眾席走道快步上台（從哪個台階依場地確認；無台階時改從側翼上），0:35 前到中央最前方。\n- 0:35–0:55｜隊形一「雙列開合」：門神排成左右兩直列各 5 人面向中央，小門神在前。頓挫點就「開」（向外跨一步、展披風），下一個頓挫點「合」（向內收、抱拳），做一次。\n- 0:55–1:15｜隊形二「交錯穿梭」：左右兩列以右肩對右肩交錯穿過、轉身，再穿回原位；小門神在前線左右交換位置。行進步法不要太快，先確認披風不勾到。\n- 1:15–1:35｜隊形三「搭橋」：各組兩人面對面，雙手高舉相交搭成拱橋，5 道拱橋由後往前排成一列；小門神從後方高舉雙手穿過拱橋走到前方，經過每道橋時該組做一個「賜福」手勢。\n- 1:35–1:45｜大亮相：V 字隊形，第 1 組在尖端中央，其餘各組往後左右展開，小門神在最前方（站或蹲，由編舞視實際狀況決定）。【定格：全體亮相】\n- 1:45–2:05｜祝福：M5 降成輕鼓底。話劇六人從後方走到門神 V 字前方排成一橫排。（大掃除群演是否加入此橫排，依舞台大小決定，尚未確認。）\n\n阿嬤：祝前人、各位點傳師及前賢大家——\n\n全體話劇演員：修道精進，步步高升，甜甜蜜蜜，羊年行大運！\n\n（「行大運」最後一字落下時，全體門神抱拳。全體一起向觀眾一鞠躬。）【鏘！M5 接 loop 版】\n\n- 2:05–2:30｜門神以組為單位從台前下到走道口，從發送組手上接過提籃，進入各自分區（見附錄 C）。門神遞出的金羊吊飾，就是阿嬤在 3-3 掛在春嬌門口的同一款，讓舞台上的善緣延伸到全場。話劇演員向觀眾揮手【下】。**2:30（全場約 14:50）＝台上節目完成。**\n- 2:30 起｜全場發放。M5 loop 持續，視聽在發送組回報「各區發完」後淡出。主持是否在發放期間接下一個節目，需與總召確認。\n\n## 第二部分｜附錄（籌備團隊用）\n\n### 附錄 A｜流程時間表、候場與音樂\n\n估算台上節目約 **14 分 50 秒**，目標 15 分鐘。話劇時間是實算的：對白共約 1,320 字、87 句，以業餘演員每秒約 3.5 字、每句接話約 0.8 秒估計，純對白約 7 分 30 秒；再加上定格、走位、道具動作與笑聲約 1 分 50 秒，話劇約 9 分 20 秒。第一次對讀請實際計時；仍超時就用附錄 G 的「再縮減備案」。\n\n| 累計時間 | 段落 | 長度 | 在台上／出場 | 音樂與音效（視聽：吳國禎） | 轉場與備註 |\n| --- | --- | --- | --- | --- | --- |\n| 00:00–01:00 | 一、威武門神登場 | 1:00 | 主門神第 1 組 | M1 門神威武版（新春揚琴）約 60 秒 | 最後一拍兩人如門板「開門」，迎阿嬤上場；第二階段前奏退到左右前緣「守護位」定格 |\n| 01:00–03:00 | 二、歡樂大掃除 | 2:00 | 阿嬤一家 5 人、大掃除群演（待確認）、春嬌（尾段，可刪）；場下：小門神 | M2 大掃除恰恰融合版，需剪成約 2:00（第 2 版 Demo 為 2:44） | 尾奏 20 秒換景：搬桌、凳、蒸籠到左區 |\n| 03:00–06:00 | 三-1 灶腳 | 3:00 | 阿嬤一家 5 人；主門神在守護位 | M3 灶腳襯底（可選，低音量）；鑼×2（暫停鍵①）＋揚琴短句 5 秒 | 暫停鍵①後主門神離開守護位，跟全家出門 |\n| 06:00–06:25 | 三 轉場：巷子 | 0:25 | 一家 5 人＋主門神；春嬌自右側上場就位 | M4 過場短句約 15 秒 | 不換景、不黑場 |\n| 06:25–11:50 | 三-2 春嬌家 | 5:25 | 一家 5 人、春嬌、主門神 | 敲門聲（可現場敲）；鑼×2（暫停鍵②）＋揚琴單音；手機「叮」 | 全劇情感重心，此段不安排大動作 |\n| 11:50–12:20 | 三-3 過年囉 | 0:30 | 同上 | 齊喊「過年囉！」後鑼鼓直接切 M5 | 話劇演員退到舞台後方兩側 |\n| 12:20–14:50 | 四、歡樂門神壓軸 | 2:30 | 門神 10 位＋小門神 2 位（暫定）、話劇演員、（可加）大掃除群演 | M5 歡樂門神曲（鑼鼓、頓挫點明確）約 2:05，接 loop 版 | **14:50＝台上節目完成** |\n| 14:50– | 全場發放禮品 | 視人數而定 | 門神、發送組 3 位 | M5 loop 持續，由發送組回報後淡出 | 不保證 3 分鐘內發完，見附錄 C |\n\n#### 候場與催場時間點\n\n| 誰 | 最晚就位時間 | 就位地點 | 備註 |\n| --- | --- | --- | --- |\n| 主門神第 1 組 | 開演前 | 左、右側翼各一位 | 00:00 起一直在台上約 15 分鐘，守護位可用較放鬆的「站班姿」 |\n| 小門神組 | 開演前 | 觀眾席後方兩側（依場地確認） | 大掃除後從側邊退到後台；11:50 前回到觀眾席入口候場 |\n| 阿嬤一家 5 人 | 01:00 | 左側翼 | 阿嬤 00:40 前就位（要躲到門神身後）；雞毛撢子、拖把、抹布、小掃把先拿在手上 |\n| 大掃除群演 | 01:15 | 左、右側翼分兩組 | 清潔用具在側翼領取 |\n| 春嬌（張素環） | 02:30 及 05:50 | 右側翼 | 03:00 下場後有約 3 分鐘收拾道具、戴護腕 |\n| 後台人員（待指定） | 05:50 前 | 右區 | 放好門牌立架 |\n| 第 2、3、4、5 組 | 11:30 | 左、右側翼 | 建議 09:30 廣播催場；周晴宣在 11:30 後不再處理服裝道具事務 |\n| 發送組（林蜂、范植勇、彭建森） | 12:20 | 各自分區的走道口，備品箱就位 | 14:25 在走道口把提籃交給門神 |\n\n#### 音樂與音效清單\n\n| 編號 | 內容 | 長度 | 製作 | 狀態 |\n| --- | --- | --- | --- | --- |\n| M1 | 門神威武版：新春揚琴旋律、正氣威武、無人聲 | 約 60 秒，需 3 個明確頓挫點 | 李鉢卿 | 會議已定方向，成品待交 |\n| M2 | 大掃除恰恰：第 2 版年味＋第 3 版恰恰節奏 | 剪成約 2:00（含 20 秒尾奏） | 李鉢卿 | 10/2 前交 Demo |\n| M3 | 灶腳襯底（輕快、無人聲） | 可循環 | 李鉢卿 | 【編劇新增】可不用 |\n| M4 | 過場短句（可取 M1 揚琴段） | 約 15 秒 | 李鉢卿 | 【編劇新增】 |\n| M5 | 歡樂門神曲：鑼鼓、鏘鏘聲、頓挫點明確；另備 loop 版供發放 | 約 2:05＋loop | 李鉢卿 | 會議已定方向 |\n| SFX | 鑼「鏘」（暫停鍵，共 2 次×2 聲）、手機「叮」、雞啼（可含在 M2） | — | 李鉢卿準備檔案，吳國禎播放 | 【編劇新增】；鑼聲也可後台現場敲 |\n\n### 附錄 B｜道具與預設\n\n| 位置 | 道具 | 誰拿／誰擺 |\n| --- | --- | --- |\n| 左側翼 | 長桌 1、圓凳 2、兩層蒸籠（內有蘿蔔糕道具）、砧板、木製或泡棉刀、保鮮盒 3 個、麥克筆、花布提袋、毛巾（桌面小物預先放在一個托盤上） | 大掃除尾奏時由阿誠、麗玲、小寶、妞妞搬出 |\n| 右側翼 | 矮凳 1、菜籃（便當盒 6 個、手寫清單、手機）、黑色護腕、門牌立架（可用樂譜架，掛「春嬌家」紙牌）、小掃把、一袋回收 | 春嬌自己帶上場；門牌立架由後台人員於 05:50 前放好 |\n| 妞妞／阿嬤身上 | 妞妞：紅紙「春」字 1 張（背面先貼好雙面膠）；阿嬤：金羊吊飾 1 個（放口袋，與發放品同款，吊繩先打好環） | 3-3 使用 |\n| 大掃除 | 新購輕量掃帚、拖把、抹布（數量依群演人數）、阿嬤的雞毛撢子 | 彩排時包塑膠袋或借棍操棒代替（文件已載） |\n| 後台／走道口 | 門神發送提籃（每組 1 個）、備品箱 3 個 | 發送組三位 |\n\n**道具連續性**：蒸籠（左區 → 阿誠搬到右區 → 壓軸時交後台）、保鮮盒與提袋（麗玲）、便當盒 6 個（春嬌帶上 → 阿誠疊起）、春字（妞妞 → 小寶）、金羊吊飾（阿嬤口袋 → 春嬌門口）、護腕與手機（春嬌）。\n\n### 附錄 C｜走道發放與發送分工（暫定）\n\n原則：門神負責「送祝福」，發送組負責「有東西可送」。穿戰袍的門神只拿一個輕提籃，不搬箱、不帶備品。分區以座位圖定案，下表是以「左、中、右」三區為例。\n\n| 分區（暫定） | 發送組負責人 | 門神組（暫定） | 發送組任務 |\n| --- | --- | --- | --- |\n| 左區 | 林蜂 | 第 2 組、第 5 組 | 備品箱放左走道口；壓軸 2:05（全場 14:25）交提籃；提籃空了在走道口補貨 |\n| 中區 | 范植勇 | 第 1 組、小門神組 | 同上；前排前人、點傳師座位建議由第 1 組優先遞送（座位安排待確認） |\n| 右區 | 彭建森 | 第 3 組、第 4 組 | 同上；最後向視聽回報「右區發完」 |\n\n- **包裝**：建議演出前把「3D 列印金羊吊飾」與「名片型錢母卡」裝成一小袋一組，門神一次遞一袋，比分兩樣拿快。\n- **數量**：總數＝預估觀眾數＋約 10% 備品（觀眾數待確認）。每個提籃先裝 20～30 袋，其餘放在發送組的備品箱。\n- **動線**：每組門神沿自己的走道單向前進、回頭時走同一側，不與其他組對撞。走道太窄時一條走道只進一組。披風較長者發放時可先收到肩後。\n- **時間估算**：全場發完時間≈觀眾數 ÷（進入走道的門神人數 × 每人每分鐘可遞約 10～15 袋）＋走位時間。這是排練時要實測的假設值，**不保證 3 分鐘內發完**。\n- **其他派人力**：大掃除群演演完後協助補貨或發放，屬建議分配，尚未確認。幕後職司者不自動納入。\n\n### 附錄 D｜角色與演員對照（完整）\n\n有台詞的角色共 6 位，其中 2 位（爸爸、孫子）演員待確認；門神全部無聲。「孫子」「孫女」是劇中角色，不代表演員實際年齡，劇本也沒有安排需要特別體能的動作。\n\n| 角色 | 演員 | 人物關係／功能 | 台詞 | 出場階段 | 確認狀態 |\n| --- | --- | --- | --- | --- | --- |\n| 陳老壇主（阿嬤） | 李冠德（反串） | 一家之主、巷子裡的老壇主；做蘿蔔糕結善緣，帶全家去家訪 | 有（主要） | 一（開門時現身）、二、三、四 | 文件已載 |\n| 阿誠（爸爸） | 【待確認】 | 阿嬤的兒子，憨厚、負責出力跑腿 | 有 | 二、三、四 | 角色文件已載；演員待確認 |\n| 麗玲（媽媽） | 蔡梅烽（依原表括註） | 阿嬤的媳婦，開朗、會安排分工 | 有 | 二、三、四 | 依原表括註；建議會議再確認一次 |\n| 小寶（孫子） | 【待確認】 | 阿嬤的孫子，愛吃，負責「吹蘿蔔糕」「邊邊」笑點 | 有（短句） | 二、三、四 | 角色文件已載；演員待確認 |\n| 妞妞（孫女） | 蘇湘澄 | 阿嬤的孫女，細心、愛幫忙 | 有（短句） | 二、三、四 | 文件已載 |\n| 春嬌（受家訪者） | 張素環 | 巷口鄰居道親，積德行善家庭的代表 | 有（主要） | 二（可刪）、三、四 | 演員文件已載；角色名與背景為編劇新增 |\n| 春嬌的先生 | 不上台 | 只以 LINE 訊息出現，由春嬌唸出 | 無 | — | 編劇新增 |\n| 明叔 | 不上台 | 春嬌每天送便當的鄰居長輩，只在台詞中提到 | 無 | — | 編劇新增（改自原稿） |\n| 主門神甲（阿嬤家門神／左） | 黃家倍 | 開場主門神；劇中守護阿嬤家、跟著家訪 | 無聲 | 一、二、三、四 | 門神名單文件已載；主門神身分為編排假設，待確認 |\n| 主門神乙（阿嬤家門神／右） | 彭永才 | 同上 | 無聲 | 一、二、三、四 | 同上 |\n| 門神群 | 陳志杰、蘇意舜、劉慶明、劉治中、戴瑋德、劉冠麟、周晴宣、田濙菁 | 壓軸歡樂門神舞、走道祝福 | 無聲 | 四 | 名單文件已載；門神總數待確認 |\n| 小門神 | 蔡秉宏、陳塏侖 | 大掃除場下巡視；壓軸從走道上台 | 無聲 | 二、四 | 文件已載；滑板車使用待確認 |\n| 大掃除群演（多戶人家） | 【待確認】；建議邀請待分配的姜莉莘、廖德玲、戴鏡智、陳氏闔家 5 位 | 手持掃帚、拖把、抹布的巷子鄰居 | 無 | 二（可加四謝幕） | 建議分配，尚未確認 |\n| — | 周義順 | 職司表「爸爸、媽媽(蔡梅烽)、孫子：周義順」一行的列名者 | — | — | 該行職責待確認；本版未指派任何角色 |\n\n**門神分組代號（編排假設，依職司表同行排列）**：第 1 組黃家倍、彭永才｜第 2 組陳志杰、蘇意舜｜第 3 組劉慶明、劉治中｜第 4 組戴瑋德、劉冠麟｜第 5 組周晴宣、田濙菁｜小門神組蔡秉宏、陳塏侖。\n\n### 附錄 E｜人員完整性與兼任檢查\n\n職司表共 32 個具名列名、29 位不重複人員，外加「陳氏闔家 5 位」；下表每一位都有紀錄。重複列名的 3 位是張素環、周晴宣（兼任兩職）與劉慶明（門神與待分配重複，算一人）。有紀錄不代表要上台。\n\n| 姓名 | 職司表列名 | 本版安排 | 類別 | 演出中時段（累計） | 兼任／衝突備註 |\n| --- | --- | --- | --- | --- | --- |\n| 陳錦秀 | 總召 | 全場統籌、待確認事項拍板 | 幕後職司 | 全場 | — |\n| 張素環 | 戲劇組；演員（受家訪者） | 飾春嬌 | 已安排演出＋幕後職司 | 02:40–03:00（可刪）、06:00–14:50 | 上台期間不能做戲劇組現場工作；代理人待指定（建議同組劉欣柔，尚未確認） |\n| 劉欣柔 | 戲劇組 | 未安排上台；建議負責提詞、催場、道具檢查 | 幕後職司（工作內容為建議） | 全場 | — |\n| 李鉢卿 | AI 音樂 Demo／後製 | 製作 M1–M5 與音效檔 | 幕後職司 | — | 文字版紀錄提到可擔任發放，本版未採用，待確認 |\n| 周晴宣 | 服裝道具組；門神 | 門神第 5 組 | 已安排演出＋幕後職司 | 候場 11:30 起，上台 12:20– | 11:30 後不能處理服裝道具；演出中服裝道具緊急處理代理人待指定；開演前門神著裝協助人員待指定 |\n| 江敏娟 | 舞蹈組（編排） | 大掃除、門神編舞 | 幕後職司 | — | 建議演出時在側翼提示頓挫點（建議） |\n| 黃家倍 | 門神 | 主門神甲（第 1 組） | 已安排演出（主門神為編排假設） | 00:00–14:50 全程在台上，再下走道發放 | 在台上最久，需排練體力與站班姿 |\n| 彭永才 | 門神 | 主門神乙（第 1 組） | 同上 | 同上 | 同上；文字版紀錄曾寫他是遞補人選，待確認 |\n| 陳志杰 | 門神 | 第 2 組 | 已安排演出 | 12:20– | — |\n| 蘇意舜 | 門神 | 第 2 組 | 已安排演出 | 12:20– | 文字版紀錄寫尚未確定能否參加，待確認 |\n| 劉慶明 | 門神；待分配（重複列名） | 第 3 組 | 已安排演出 | 12:20– | 算一人，不另派大掃除 |\n| 劉治中 | 門神 | 第 3 組 | 已安排演出 | 12:20– | 文字版紀錄曾舉他為主門神，待確認 |\n| 戴瑋德 | 門神 | 第 4 組 | 已安排演出 | 12:20– | 第二版不再擔任「春嬌家門神」 |\n| 劉冠麟 | 門神 | 第 4 組 | 已安排演出 | 12:20– | 同上 |\n| 田濙菁 | 門神 | 第 5 組 | 已安排演出 | 12:20– | — |\n| 蔡秉宏 | 小門神組合 | 小門神 | 已安排演出 | 01:20–02:40（場下）、12:20– | 滑板車使用待確認 |\n| 陳塏侖 | 小門神組合 | 小門神 | 已安排演出 | 同上 | 同上 |\n| 李冠德 | 演員（老壇主／阿嬤，反串） | 飾陳老壇主 | 已安排演出 | 00:40–14:50 | 對白最多，建議優先安排對讀 |\n| 蘇湘澄 | 演員（孫女） | 飾妞妞 | 已安排演出 | 01:00–14:50 | — |\n| 蔡梅烽 | 演員（媽媽，原表括註） | 飾麗玲 | 已安排演出（依原表括註） | 01:00–14:50 | 建議會議再確認一次 |\n| 周義順 | 演員行「爸爸、媽媽(蔡梅烽)、孫子：周義順」 | 未指派任何角色 | 待確認 | — | 該行職責待確認 |\n| 姜莉莘 | 待分配 | 建議：大掃除群演，演完協助補貨 | 建議分配，尚未確認 | 01:15–03:00 | — |\n| 廖德玲 | 待分配 | 同上 | 建議分配，尚未確認 | 同上 | — |\n| 戴鏡智 | 待分配 | 同上 | 建議分配，尚未確認 | 同上 | — |\n| 陳氏闔家 5 位 | 待分配 | 建議：大掃除群演中的「一戶人家」 | 建議分配，尚未確認 | 同上 | 姓名、年齡、是否與其他名單重疊都未載明，需先取得名單 |\n| 張德光 | 交通 | 交通 | 幕後職司 | — | — |\n| 林蜂 | 發東西 | 左區發送（暫定） | 幕後職司 | 12:20 就位 | — |\n| 范植勇 | 發東西 | 中區發送（暫定） | 幕後職司 | 12:20 就位 | — |\n| 彭建森 | 發東西 | 右區發送（暫定） | 幕後職司 | 12:20 就位 | — |\n| 吳國禎 | 視聽 | 播放全部音樂與音效 | 幕後職司 | 全場 | 暫停鍵的鑼聲需要跟演員一起排練 |\n\n#### 其他檢查結果\n\n- **尚未指派的後台工作**：職司表沒有列到「後台人員」。道具交接（左右側翼各 1 位）、門牌立架擺放、滑板車接手、門神著裝協助，目前都沒有負責人，需指定。\n- **門神候場**：第 2～5 組在後台穿戴候場約 11 分鐘；主門神在台上約 15 分鐘。建議候場區準備椅子，盔甲可在 09:30 催場後再穿上最後一件（實際穿戴時間待服裝樣品到貨後實測）。\n- **發送人力**：3 位分 3 區。觀眾若多，需加派人手；群演協助屬建議，尚未確認。\n- **台上人數高峰**：第四階段約 18 人（門神 12＋話劇 6），若加入大掃除群演會再增加，需依舞台大小決定。\n- **大掃除群演人數**：目前沒有任何一位確認，群演 1、2 組的分法需等名單出來再定。\n\n### 附錄 F｜文件核對與改寫原則\n\n三份附件都已完整讀取：原劇本、第二次會議紀錄（docx）、職司分工（PDF）。會議紀錄第四節「職司分工與演員角色明細」是一張嵌入的心智圖，內容與職司分工 PDF 相同。另外，本專案資料夾裡有一份較詳細的《第二次會議紀錄_0923》文字版，與附件 docx 有幾處不同；本版以三份附件為準，文字版只作參考，差異一併列在下表。\n\n本文用三種標示：**【文件已載】**＝附件寫明的安排；**【編劇新增】**＝本版為了能排練而新設，可以改；**【待確認】**＝需要會議或總召定案。\n\n#### 重要差異與暫定處理\n\n| # | 差異 | 文件內容 | 本版暫定處理 |\n| --- | --- | --- | --- |\n| 1 | 門神人數 | 會議紀錄第五節寫「10 位大／小門神」；職司表列門神 10 位＋小門神 2 位＝12 位（文字版紀錄也寫「含小門神約 12 位」） | 以「10 位門神＋2 位小門神」設計。**總人數【待確認】**，不刪任何人。改成 10 人時的隊形調整見附錄 G |\n| 2 | 總時間 | 會議寫整體 15～18 分鐘，但分段相加為 17～22.5 分鐘（1～1.5＋2～3＋12～15＋2～3） | 第二版依 9/25 指示縮為約 15 分鐘：1:00＋2:00＋9:20＋2:30＝14:50。話劇 9 分 20 秒明顯低於會議寫的 12～15 分鐘，**【待確認】** |\n| 3 | 開場主門神 | 職司表以括號標出【黃家倍、彭永才】；文字版紀錄舉例為「家倍壇主、治中壇主」，並寫彭永才是蘇意舜的遞補 | 暫以黃家倍、彭永才為開場主門神候選，這是**編排假設，【待確認】** |\n| 4 | 演員行歧義 | 「爸爸、媽媽(蔡梅烽)、孫子：周義順」。會議出席名單寫「周義順 經理」；文字版紀錄提到經理被推舉加入門神，也自薦反串小孫子，列為「趣味選項」 | 媽媽：蔡梅烽（依原表括註）。爸爸、孫子：演員【待確認】。周義順：列入人員核對表，該行職責【待確認】。不認定周義順演爸爸或孫子，也不認定一人兼多角 |\n| 5 | 劉慶明重複列名 | 同時列於門神名單與待分配 | 算一個人。本版排他為門神，待分配欄註「重複列名」，不另派大掃除群演 |\n| 6 | 開場後主門神去向 | 會議紀錄 docx：舞畢「移至舞台左右兩側定格站立守護」；文字版：「轉入大掃除前，門神退場」 | 採 docx：主門神留在兩側守護位，兼任劇中「阿嬤家的門神」。若排練發現體力、遮擋或服裝問題，改用文字版（大掃除開始時退場，話劇 3-1 再上） |\n| 7 | 大掃除時台下門神 | docx：小門神騎滑板車在場下巡視；文字版：全體門神台下巡視、兩位騎「電動」滑板車，並註明「暫定、後續再議」 | 主版本只安排 2 位小門神在場下巡視，其餘門神後台候場。滑板車種類（電動或人力）【待確認】，劇本附不用滑板車的替代走位 |\n| 8 | 發放人力 | docx：全體大／小門神走走道發放；職司表另列「發東西」林蜂、范植勇、彭建森；文字版提到大掃除客串演員退場後可協助發放 | 門神負責「祝福遞送」，發送組三位負責備品、補給與分區。大掃除群演協助發放屬**建議分配，尚未確認** |\n| 9 | 受家訪者姓名 | 職司表只寫「受家訪者：張素環」；文字版寫由鄰居「春嬌」擔任被家訪者 | 沿用原稿角色名「春嬌」，但人物背景重寫（見下方） |\n| 10 | 人名用字 | 文字版有錄音辨識字，如「國珍＊」「陳志傑＊」 | 一律以職司表用字為準：吳國禎、陳志杰。文字版中未列於職司表的人名，不列入本劇名單 |\n\n#### 本版新增設定【編劇新增】\n\n1. **誰看得見門神**：劇中人物全都看不見門神，只有觀眾看得見，全劇維持一致。門神較長的表演用「暫停鍵」：一聲鑼「鏘」，劇中人物定格，只有門神動；第二聲鑼，人物恢復。這個手法取自文字版紀錄的構想，本版正式採用。\n2. **門神不解決問題**：門神只做無聲反應、定格和很小的「顯靈」（一陣風吹動披風、蒸籠蓋輕響），人物都當成自然現象。困難一律由人物自己用傾聽、分工、溝通和動手幫忙解決。\n3. **人物沿用原稿名字**：陳老壇主（阿嬤）、阿誠（爸爸）、麗玲（媽媽）、小寶（孫子）、妞妞（孫女）、春嬌（受家訪者）。有台詞的角色只有這 6 位。\n4. **原稿三段解憂收成一戶家訪**：春嬌從「婆媳和開銷壓力的訴苦者」改寫成「巷子裡默默行善的道親」——天天幫獨居長輩送便當、掃巷口。年前她手腕扭到、先生年前加班，六份長輩年菜便當和婆婆交代的年夜飯全壓在她身上。原稿「付出沒人看見」的委屈保留，改用傾聽、分工和跟先生溝通來化解，不叫她忍耐：長輩便當由阿嬤一家分工完成，自家年夜飯由春嬌的先生接手。\n5. **大志、明叔兩段刪除**：大志不保留；明叔改成春嬌每天送便當的鄰居長輩，只在台詞裡提到，不上台。理由：演員不足、話劇只有約 9 分鐘、一戶家訪才聚焦。原稿「老梅子」「地質層」等笑點隨段落一併刪除。\n6. **積善之家必有餘慶的呈現**：春嬌平常照顧巷子，所以她有困難時，阿嬤一家主動上門相挺——「餘慶」是人情回流、大家來幫忙，不是錢財、升遷或神蹟。\n7. **舞台分區（以觀眾視角為準）**：左區＝阿嬤家灶腳；右區＝春嬌家；中央＝巷子兼舞蹈區。家訪靠演員走位和少量道具完成，不換景、不黑場。\n8. **大掃除兼換景**：大掃除最後一段，由家庭成員把桌子、蒸籠搬到左區，直接接話劇。\n9. **春嬌在大掃除露面**：張素環以「掃巷口的鄰居」身分出現在大掃除尾段，先讓觀眾認識春嬌（可刪，不影響時間）。\n10. **開門與金羊**：開場最後一拍，兩位主門神像兩扇門板一樣「開門」，阿嬤從門中間出場，直接接大掃除。3-3 阿嬤把一個金羊吊飾掛在春嬌門口，和壓軸發放的是同一款，讓禮品接上「結善緣」的劇情。\n11. **第二版取消「春嬌家門神」段落**：第 4 組戴瑋德、劉冠麟改為只在壓軸出場。\n\n### 附錄 G｜會議需求對照、刪減紀錄與待確認事項\n\n會議紀錄的四階段流程、音樂決議與道具規劃都已落實到劇本；第二版台上約 14 分 50 秒，若排練仍超時，還有約 1 分鐘的再縮減備案。\n\n#### 會議需求落實位置\n\n| 會議需求 | 落實位置 |\n| --- | --- |\n| 四階段流程，整體 15～18 分鐘 | 附錄 A 時間表，第二版估算 14:50 |\n| 兩位主門神配新春揚琴威武曲登場，舞畢兩側定格守護 | 第一階段；守護位延續到話劇 |\n| 大掃除用恰恰節奏、持掃帚拖把抹布、容易編舞 | 第二階段：恰恰基本步＋兩組輪流做歌詞動作 |\n| 小門神騎滑板車場下巡視 | 第二階段，附不用滑板車的替代走位 |\n| 話劇濃縮為家訪一戶積德行善家庭 | 3-1 定動機、3-2 家訪春嬌 |\n| 門神無聲顯靈與定格，彰顯「積善之家必有餘慶」 | 暫停鍵①②、「被吹」反應；阿嬤在 3-2 ⑥ 說出這句話 |\n| 壓軸歡樂舞曲：大動作、穿梭交錯、搭橋變陣、定格亮相 | 第四階段隊形一至三與大亮相 |\n| 門神走走道發放金羊吊飾與錢母卡 | 第四階段 2:05 起，與發送組分區分工；3-3 阿嬤先把同款金羊掛在春嬌門口，讓發放接上劇情 |\n| 阿嬤花衫、白假髮、老妝、三八痣、講台語 | 阿嬤對白穿插台語短句；造型只是造型，全劇沒有拿外貌或性別開玩笑 |\n| 掃把拖把買新的輕的，彩排包袋或借棍操棒 | 附錄 B 道具表 |\n\n#### 第二版已刪除內容（時間有餘可加回）\n\n| 刪除內容 | 省下時間 | 說明 |\n| --- | --- | --- |\n| 可選段 A：兩家門神見禮（原暫停鍵②） | 約 20 秒 | 第 4 組改為只在壓軸出場 |\n| 轉場「要叫人喔／先預約」4 句 | 約 15 秒 | 改為阿嬤摸口袋確認金羊，順便預告 3-3 |\n| 3-3「貼倒了／春到」3 句 | 約 12 秒 | 小寶直接貼好春字 |\n| 3-2「吹蘿蔔糕」呼應段 | 約 20 秒 | 保留「邊邊跟蒸籠一樣大」作為後段呼應 |\n| 3-2 阿誠「去年颱風……」 | 約 10 秒 | — |\n| 3-2 貼圖 3 句 | 約 10 秒 | — |\n| 3-2 麗玲「十二道？」與春嬌「年年有餘」 | 約 6 秒 | — |\n| 3-2 阿嬤「十二道菜，兩家合起來辦」 | 約 8 秒 | 改為分工只處理長輩便當，年夜飯交給春嬌先生，劇情更清楚 |\n| 3-1 小寶「可是它很香嘛」、阿誠「她先生跑貨運」、麗玲名單中「隔壁陳媽媽」 | 約 12 秒 | 先生加班改由春嬌自己在 3-2 說出 |\n| 暫停鍵①揚琴短句 10 秒改 5 秒 | 約 5 秒 | — |\n| 壓軸：隊形四「圍圈開花」、雙列開合改做一次、入場縮短 | 約 30 秒 | M5 需同步剪到約 2:05 |\n\n#### 再縮減備案（排練後仍超時才用）\n\n| 順序 | 刪什麼 | 省下時間 | 刪了會少什麼 |\n| --- | --- | --- | --- |\n| 1 | 轉場「等咧」與門神撞背小笑點 | 約 8 秒 | 少一個門神小笑點 |\n| 2 | 3-2 ⑦ 阿誠「配方我也要學」 | 約 6 秒 | 傳承只剩春嬌接手 |\n| 3 | 3-2 ② 小寶數「一到六」 | 約 5 秒 | 小寶少一句 |\n| 4 | 壓軸隊形二「交錯穿梭」 | 約 20 秒 | 會議提到的「穿梭交錯」需併入搭橋段 |\n| 5 | 大掃除剪到 1:45 | 約 15 秒 | 低於會議寫的 2～3 分鐘，需會議同意 |\n\n**不可刪的主線**：春嬌「好像都沒有人看見」＋暫停鍵②＋阿嬤「有人看見啦」、④ 分工、⑤ 溝通、⑥ 先生回覆與「積善之家」一句。這些刪了，家訪就只剩送東西。\n\n#### 門神若改成 10 人的隊形調整\n\n不在此決定刪誰，只說明隊形怎麼變。隊形以「兩人一組」設計，少一組時：入場少一個頓挫點（該拍改給小門神亮相）；雙列開合改為每列 4 人；搭橋改為 4 道拱橋；V 字改為尖端 1 組、後方左右各 1～2 組。若減少後出現單數人，孤單的一位可站 V 字尖端或與小門神同組。\n\n#### 待確認事項（會影響演員、劇情、時間或現場執行）\n\n- [ ] 門神總數是 10 還是 12 位？開場主門神是黃家倍、彭永才，還是文字版紀錄舉例的黃家倍、劉治中？蘇意舜能否參加？\n- [ ] 爸爸（阿誠）、孫子（小寶）由誰演？周義順在該行的職責是什麼？媽媽由蔡梅烽飾演是否確定？\n- [ ] 全場 15 分鐘版的話劇約 9 分 20 秒，明顯低於會議寫的 12～15 分鐘，需在第三次會議確認採用。\n- [ ] 主門神是否全程留在兩側守護（docx），還是大掃除前退場（文字版）？\n- [ ] 大掃除群演名單：待分配的姜莉莘、廖德玲、戴鏡智與陳氏闔家 5 位是否參加？陳氏闔家的姓名與是否與其他名單重疊。\n- [ ] 滑板車是電動還是人力？場地走道寬度與台階位置是否允許？台下巡視只有小門神，還是全體門神？\n- [ ] 發放時間點定在壓軸舞後是否可行？發放期間主持是否接下一個節目？觀眾人數與座位分區。\n- [ ] 後台道具交接、門牌立架擺放、門神著裝協助、滑板車接手由誰負責？張素環、周晴宣的現場職務代理人是誰？\n- [ ] 音樂長度：M2 剪到約 2:00、M5 約 2:05 加 loop 版，以及鑼聲用音效檔還是現場敲。\n\n#### 排練建議\n\n1. **第一次對讀就計時**：只讀話劇，每個小節（3-1、轉場、3-2 ①～⑦、3-3）分別計時，與附錄 A 估算比對，超時就照「再縮減備案」順序刪。\n2. **暫停鍵單獨練**：視聽敲鑼、演員定格、門神動、再敲鑼恢復，兩個暫停鍵各練 3 次。主門神只需額外出席話劇轉場與暫停鍵的排練，其他門神只練壓軸。\n3. **貼地標**：守護位、左區桌位、右區門牌立架、壓軸 V 字尖端。\n4. **大掃除以「練 5 次能上手」為目標**：先教恰恰基本步，再加兩個分組動作，其他交給江敏娟在排練時決定。\n\n資料來源：《老壇主的時光廚房》原劇本、《2027年教定區新春節目籌劃｜第２次會議紀錄》、《2027 新春節目職司分工》；參考：專案內《第二次會議紀錄_0923》文字版。\n"}</script>
+<script id="app-js">
+(function(){
+var SRC=JSON.parse(document.getElementById('src').textContent);
+var ROLES=['阿嬤','阿誠','麗玲','小寶','妞妞','春嬌'];
+var SPEAKERS=['阿嬤','阿誠','麗玲','小寶','妞妞','春嬌','小寶、妞妞','全體'];
+var FONTS='<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">\n';
+var LKEY='kitchen-script-view', SKEY='kitchen-script-draft';
+var original=SRC.md.split('\n'), lines=original.slice();
+var editing=false, readOnly=false, artifactNs=null, saving=false, mode=null;
+var PT=(function(){try{var d=document.createElement('div');d.contentEditable='plaintext-only';return d.contentEditable==='plaintext-only';}catch(e){return false;}})();
+var ORIG=new Set(original);
+var pref={};
+try{pref=JSON.parse(localStorage.getItem(LKEY)||'{}')||{};}catch(e){pref={};}
+function savePref(){try{localStorage.setItem(LKEY,JSON.stringify(pref));}catch(e){}}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function inline(t,dlg){
+  t=esc(t);
+  t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  t=t.replace(/【([^】]*)】/g,'<span class="cue">$1</span>');
+  t=t.replace(/〔譯：([^〕]*)〕/g,'<span class="tr">譯｜$1</span>');
+  t=t.replace(/〔([^〕]*)〕/g,'<span class="tone">$1</span>');
+  if(dlg)t=t.replace(/（([^（）]*)）/g,'<span class="inact">（$1）</span>');
+  return t;
+}
+function mentions(t){var f=ROLES.filter(function(r){return t.indexOf(r)>=0;});if(t.indexOf('門神')>=0)f.push('門神');return f.join(' ');}
+function splitMeta(title){var m=title.match(/（([^（）]*\d[^（）]*)）\s*$/);return m?[title.slice(0,m.index).trim(),m[1]]:[title,''];}
+function summary(title){var sm=splitMeta(title);return '<summary><span class="st">'+inline(sm[0])+'</span>'+(sm[1]?'<span class="meta">'+esc(sm[1])+'</span>':'')+'<span class="chev" aria-hidden="true"></span></summary>';}
+function parseDlg(ln){
+  var m=ln.match(/^([^：*（〔【]{1,30})：(.*)$/);if(!m)return null;
+  var spk=m[1],first=spk.split('（')[0].split('、')[0];
+  if(ROLES.indexOf(first)>=0||spk.indexOf('全體')===0)return {spk:spk,text:m[2]};
+  return null;
+}
+function changed(i){return ORIG.has(lines[i])?'':' changed';}
+function src(i,prefix,text){return '<span class="src" contenteditable="'+(PT?'plaintext-only':'true')+'" spellcheck="false" data-i="'+i+'" data-p="'+esc(prefix)+'">'+esc(text)+'</span>';}
+function tools(i){return '<span class="edt"><button class="eb" type="button" data-add="'+i+'" title="在下面加一行" aria-label="在下面加一行">＋</button><button class="eb" type="button" data-del="'+i+'" title="刪除這一行" aria-label="刪除這一行">刪</button></span>';}
+function wrapEdit(i,inner){return '<span class="edrow"><span class="grow">'+inner+'</span>'+tools(i)+'</span>';}
+
+function renderBody(){
+  var out=[],l3=false,l4=false,list=null,part=0,sid=0,intro=[],started=false;
+  function closeList(){if(list){out.push(list==='ol'?'</ol>':'</ul>');list=null;}}
+  function closeL4(){closeList();if(l4){out.push('</div></details>');l4=false;}}
+  function closeL3(){closeL4();if(l3){out.push('</div></details>');l3=false;}}
+  for(var i=0;i<lines.length;i++){
+    var ln=lines[i].replace(/\s+$/,''),m;
+    if(ln.indexOf('# ')===0)continue;
+    if(!started&&ln.indexOf('## ')!==0){if(ln.trim()&&ln.indexOf('版本：')!==0)intro.push(ln);continue;}
+    if(ln.indexOf('## ')===0){
+      started=true;closeL3();if(part)out.push('</section>');part++;
+      var name=ln.slice(3),k=name.indexOf('｜');
+      out.push('<section class="part '+(part===1?'script':'appx')+'" id="part'+part+'"><h2><span class="plabel">'+esc(k>=0?name.slice(0,k):name)+'</span>'+esc(k>=0?name.slice(k+1):'')+'</h2>');
+      continue;
+    }
+    if(ln.indexOf('### ')===0){closeL3();sid++;out.push('<details class="l3" id="s'+sid+'">'+summary(ln.slice(4))+'<div class="body">');l3=true;continue;}
+    if(ln.indexOf('#### ')===0){closeL4();sid++;out.push('<details class="l4" id="s'+sid+'">'+summary(ln.slice(5))+'<div class="body">');l4=true;continue;}
+    if(!ln.trim())continue;
+    if(ln.charAt(0)==='|'){
+      closeList();var rows=[ln];
+      while(i+1<lines.length&&lines[i+1].charAt(0)==='|'){rows.push(lines[++i]);}
+      var cells=rows.map(function(r){return r.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(function(c){return c.trim();});});
+      var h='<div class="tbl"><table><thead><tr>'+cells[0].map(function(c){return '<th>'+inline(c)+'</th>';}).join('')+'</tr></thead><tbody>';
+      cells.slice(2).forEach(function(r){h+='<tr>'+r.map(function(c){return '<td>'+inline(c)+'</td>';}).join('')+'</tr>';});
+      out.push(h+'</tbody></table></div>');continue;
+    }
+    if((m=ln.match(/^- \[ \] (.*)$/))){
+      if(list!=='todo'){closeList();out.push('<ul class="todo">');list='todo';}
+      out.push('<li class="'+changed(i)+'"><span class="box" aria-hidden="true"></span><span>'+(editing?wrapEdit(i,src(i,'- [ ] ',m[1])):inline(m[1]))+'</span></li>');continue;
+    }
+    if((m=ln.match(/^- (.*)$/))){
+      if(list!=='ul'){closeList();out.push('<ul class="steps">');list='ul';}
+      var tx=m[1],tm=tx.match(/^([0-9:–\-]+)｜(.*)$/);
+      if(editing){out.push('<li class="line plain'+changed(i)+'" data-m="'+mentions(tx)+'">'+wrapEdit(i,src(i,'- ',tx))+'</li>');}
+      else if(tm){out.push('<li class="line" data-m="'+mentions(tx)+'"><span class="tc">'+esc(tm[1])+'</span><span>'+inline(tm[2])+'</span></li>');}
+      else{out.push('<li class="line plain" data-m="'+mentions(tx)+'">'+inline(tx)+'</li>');}
+      continue;
+    }
+    if((m=ln.match(/^(\d+\. )(.*)$/))){
+      if(list!=='ol'){closeList();out.push('<ol>');list='ol';}
+      out.push('<li class="'+changed(i)+'">'+(editing?wrapEdit(i,src(i,m[1],m[2])):inline(m[2]))+'</li>');continue;
+    }
+    closeList();
+    var d=parseDlg(ln);
+    if(d){
+      var who,shown,sub='';
+      if(d.spk.indexOf('全體')===0){who='all';shown='全體';sub=d.spk.slice(2).replace(/^（|）$/g,'');}
+      else{who=d.spk.split('、').filter(function(s){return ROLES.indexOf(s)>=0;}).join(' ');shown=d.spk;}
+      var lng=(shown.length>3||sub)?' long':'';
+      if(editing){
+        var opts=SPEAKERS.slice();if(opts.indexOf(d.spk)<0)opts.unshift(d.spk);
+        var sel='<select class="spsel" data-si="'+i+'" aria-label="說話的角色">'+opts.map(function(o){return '<option'+(o===d.spk?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'<option value="__act">→ 改成舞台動作</option></select>';
+        out.push('<div class="line dlg'+lng+changed(i)+'" data-s="'+who+'"><span class="spk">'+sel+'</span>'+wrapEdit(i,src(i,d.spk+'：',d.text))+'</div>');
+      }else{
+        out.push('<div class="line dlg'+lng+'" data-s="'+who+'"><span class="spk">'+esc(shown)+(sub?'<span class="sub">'+esc(sub)+'</span>':'')+'</span><p>'+inline(d.text,true)+'</p></div>');
+      }
+      continue;
+    }
+    var cls='',c0=ln.charAt(0);
+    if(c0==='（')cls='line act';else if(c0==='【')cls='line cueline';
+    if(!editing&&/^\*\*[^*]+\*\*$/.test(ln)){out.push('<h5 class="beat">'+inline(ln.slice(2,-2))+'</h5>');continue;}
+    var tag=cls?'p':'p';
+    out.push('<'+tag+' class="'+cls+changed(i)+'"'+(cls?' data-m="'+mentions(ln)+'"':'')+'>'+(editing?wrapEdit(i,src(i,'',ln)):inline(ln))+'</'+tag+'>');
+  }
+  closeL3();if(part)out.push('</section>');
+  return {intro:intro,body:out.join('\n')};
+}
+
+var root=document.getElementById('root');
+function shell(introHtml){
+  return '<div class="wrap">'+
+  '<header class="top"><div class="eyebrow">2027 教定區新春團拜　排練本</div>'+
+  '<h1>老壇主的<span class="mark">時光廚房</span></h1>'+
+  '<div class="vrow"><span class="pill">'+esc(SRC.version)+'</span>'+(SRC.edited?'<span>網頁最後修改：'+esc(SRC.edited)+'</span>':'')+'<span>台詞可直接在本頁修改｜<a href="'+esc(SRC.docUrl)+'" target="_blank" rel="noopener">Google 文件備份</a></span></div>'+
+  '<div class="intro">'+introHtml+'</div></header>'+
+  '<div class="bar" role="toolbar" aria-label="劇本工具">'+
+    '<div class="chips" id="chips">'+['','阿嬤','阿誠','麗玲','小寶','妞妞','春嬌','門神'].map(function(r){return '<button class="chip" type="button" data-role="'+r+'" aria-pressed="false">'+(r||'全部')+'</button>';}).join('')+'</div>'+
+    '<div class="barrow"><span id="count"></span><span class="tools"><button class="tool" type="button" id="openAll">全部展開</button><button class="tool" type="button" id="closeAll">全部收合</button><button class="btn" type="button" id="editBtn" hidden>編輯台詞</button></span></div>'+
+    '<div class="editbar" id="editbar" hidden><span class="msg" id="editmsg">點虛線框直接改字，改完按「儲存」。<span class="hint-wide">（）是舞台動作、【】是提示、〔〕是語氣，照原本的符號寫就好。</span></span><button class="btn" type="button" id="cancelBtn">放棄修改</button><button class="btn primary" type="button" id="saveBtn" disabled>儲存</button></div>'+
+    '<div class="notice" id="notice" hidden></div>'+
+  '</div>'+
+  '<main id="main"></main>'+
+  '<p class="foot">角色篩選與展開狀態只存在你自己的瀏覽器。台詞修改要按「儲存」或「下載新版」並更新網站後，其他人才會看到。</p>'+
+  '</div>';
+}
+
+function draw(){
+  var r=renderBody();
+  var openIds=pref.open||null;
+  if(!root.firstChild){root.innerHTML=shell(r.intro.map(function(p){return '<p>'+inline(p)+'</p>';}).join(''));bindShell();}
+  else{openIds=[].slice.call(document.querySelectorAll('#main details')).filter(function(d){return d.open;}).map(function(d){return d.id;});}
+  document.body.classList.toggle('editing',editing);
+  var main=document.getElementById('main');
+  main.innerHTML=r.body;
+  var all=[].slice.call(main.querySelectorAll('details'));
+  if(openIds){all.forEach(function(d){d.open=openIds.indexOf(d.id)>=0;});}
+  else{var f=main.querySelector('#part1 details.l3');if(f)f.open=true;}
+  all.forEach(function(d){d.addEventListener('toggle',rememberOpen);});
+  applyRole(pref.role||'',false);
+  updateEditUI();
+}
+function rememberOpen(){pref.open=[].slice.call(document.querySelectorAll('#main details')).filter(function(d){return d.open;}).map(function(d){return d.id;});savePref();}
+
+function applyRole(role,scroll){
+  [].slice.call(document.querySelectorAll('.chip')).forEach(function(c){c.setAttribute('aria-pressed',String(c.dataset.role===role));});
+  document.body.classList.toggle('has-role',!!role);
+  var n=0,first=null;
+  [].slice.call(document.querySelectorAll('.script .line')).forEach(function(el){
+    var hit=false;
+    if(role){
+      if(el.classList.contains('dlg')){var s=(el.dataset.s||'').split(' ');hit=role!=='門神'&&(s.indexOf(role)>=0||s.indexOf('all')>=0);if(hit)n++;}
+      else{hit=(el.dataset.m||'').split(' ').indexOf(role)>=0;if(hit&&role==='門神')n++;}
+    }
+    el.classList.toggle('hit',hit);el.classList.toggle('dim',!!role&&!hit);
+    if(hit){var p=el.parentElement;while(p){if(p.tagName==='DETAILS')p.open=true;p=p.parentElement;}if(!first)first=el;}
+  });
+  var count=document.getElementById('count');
+  if(!role)count.textContent='點角色，只亮出該角色的台詞與動作';
+  else if(role==='門神')count.textContent='門神：共 '+n+' 處動作或定格';
+  else count.textContent=role+'：共 '+n+' 句台詞（含齊聲）';
+  pref.role=role;savePref();
+  if(role){rememberOpen();if(scroll&&first)first.scrollIntoView({block:'center',behavior:'smooth'});}
+}
+
+function isDirty(){return lines.join('\n')!==original.join('\n');}
+function stash(){try{if(isDirty())localStorage.setItem(SKEY,JSON.stringify({base:SRC.md,md:lines.join('\n')}));else localStorage.removeItem(SKEY);}catch(e){}}
+function updateEditUI(){
+  var eb=document.getElementById('editBtn');
+  eb.hidden=!mode||readOnly||editing;
+  document.getElementById('editmsg').firstChild.textContent=mode==='download'?'點虛線框直接改字，改完按「下載新版」，再上傳到 GitHub 取代原本的 index.html。':'點虛線框直接改字，改完按「儲存」。';
+  document.getElementById('editbar').hidden=!editing;
+  var sb=document.getElementById('saveBtn');sb.disabled=!isDirty()||saving;
+  sb.textContent=saving?'儲存中…':(mode==='download'?'下載新版 index.html':'儲存');
+}
+function note(html){var n=document.getElementById('notice');if(!html){n.hidden=true;n.innerHTML='';return;}n.innerHTML=html;n.hidden=false;}
+
+function lineAt(i){return lines[i];}
+function bindShell(){
+  document.getElementById('chips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)applyRole(c.dataset.role,true);});
+  document.getElementById('openAll').onclick=function(){[].slice.call(document.querySelectorAll('#main details')).forEach(function(d){d.open=true;});rememberOpen();};
+  document.getElementById('closeAll').onclick=function(){[].slice.call(document.querySelectorAll('#main details')).forEach(function(d){d.open=false;});rememberOpen();};
+  document.getElementById('editBtn').onclick=function(){editing=true;draw();note('');};
+  document.getElementById('cancelBtn').onclick=function(){lines=original.slice();editing=false;stash();draw();};
+  document.getElementById('saveBtn').onclick=save;
+  var main=document.getElementById('main');
+  main.addEventListener('input',function(e){
+    var s=e.target.closest('.src');if(!s)return;
+    var i=+s.dataset.i;lines[i]=s.dataset.p+s.textContent.replace(/\s*\n\s*/g,' ');
+    var row=s.closest('.line,li,p');if(row)row.classList.toggle('changed',!ORIG.has(lines[i]));
+    stash();updateEditUI();
+  });
+  main.addEventListener('keydown',function(e){if(e.isComposing||e.keyCode===229)return;if(e.key==='Enter'&&e.target.closest&&e.target.closest('.src')){e.preventDefault();e.target.blur();}});
+  main.addEventListener('change',function(e){
+    var sel=e.target.closest('.spsel');if(!sel)return;
+    var i=+sel.dataset.si,d=parseDlg(lines[i]);if(!d)return;
+    if(sel.value==='__act'){var t=d.text.trim();lines[i]=(t.charAt(0)==='（'?t:'（'+t+'）');}
+    else lines[i]=sel.value+'：'+d.text;
+    stash();draw();
+  });
+  main.addEventListener('click',function(e){
+    var a=e.target.closest('[data-add]'),dl=e.target.closest('[data-del]');
+    if(a){
+      var i=+a.dataset.add,ln=lines[i],nl,d=parseDlg(ln),m;
+      if((m=ln.match(/^(- \[ \] |- |\d+\. )/)))nl=m[1];
+      else if(d)nl=d.spk+'：';
+      else nl='';
+      if(m)lines.splice(i+1,0,nl);else lines.splice(i+1,0,'',nl);
+      var target=m?i+1:i+2;stash();draw();
+      var s=document.querySelector('.src[data-i="'+target+'"]');if(s)s.focus();
+    }
+    if(dl){var j=+dl.dataset.del;lines.splice(j,1);stash();draw();}
+  });
+}
+
+function buildDoc(md){
+  var data=JSON.stringify({version:SRC.version,docUrl:SRC.docUrl,edited:new Date().toLocaleString('zh-TW',{hour12:false}),md:md}).replace(/</g,'\\u003c');
+  return '<!doctype html>\n<html lang="zh-Hant">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n<title>時光廚房排練本</title>\n'+FONTS+
+    '<style id="page-style">'+document.getElementById('page-style').textContent+'</style>\n</head>\n<body>\n<div id="root"></div>\n'+
+    '<script type="application/json" id="src">'+data+'<\/script>\n'+
+    '<script id="app-js">'+document.getElementById('app-js').textContent+'<\/script>\n</body>\n</html>\n';
+}
+function cleanMd(){return lines.filter(function(l){var d=parseDlg(l);return !(d&&!d.text.trim())&&!/^(- \[ \] |- |\d+\. )$/.test(l);}).join('\n');}
+function download(){
+  var html=buildDoc(cleanMd());
+  try{var blob=new Blob([html],{type:'text/html'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='index.html';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1500);}
+  catch(e){note('這個瀏覽器無法下載檔案，請改用電腦版 Chrome 或 Edge 再試。');return;}
+  note('已下載新的 index.html。請到 GitHub 儲存庫按「Add file → Upload files」上傳，取代原本的 index.html，約 1 分鐘後網頁就會更新。在那之前重新整理，本頁會提示你還原這次的修改。');
+}
+function save(){
+  if(mode==='download'){if(isDirty())download();return;}
+  if(!artifactNs||!isDirty()||saving)return;
+  var md=cleanMd();
+  saving=true;updateEditUI();stash();
+  artifactNs.publish(buildDoc(md)).then(function(){
+    try{localStorage.removeItem(SKEY);}catch(e){}
+    note('已儲存，頁面正在更新成新版本…');
+  },function(err){
+    saving=false;updateEditUI();
+    var code=err&&err.code;
+    if(code==='conflict')note('有人剛好也存了新版本，頁面會自動更新。你的修改已暫存，更新後可以按「還原」拿回來。');
+    else if(code==='not_writer'||code==='not_granted'||code==='consent_required'||code==='capability_disabled'||code==='capability_removed'||code==='not_declared'){readOnly=true;editing=false;draw();note('你目前只有檢視權限，無法儲存修改。需要改台詞請請頁面擁有者開放編輯權限。');}
+    else if(code==='rate_limited')note('剛剛存得太頻繁，請等一下再按一次「儲存」。');
+    else if(code==='too_large')note('內容太大，無法儲存。請刪減後再試。');
+    else note('儲存沒有成功，請稍後再按一次「儲存」。你的修改還在畫面上。');
+  });
+}
+
+function offerRestore(){
+  try{
+    var d=JSON.parse(localStorage.getItem(SKEY)||'null');
+    if(!d)return;
+    if(d.md===SRC.md){localStorage.removeItem(SKEY);return;}
+    note('上次有一份還沒存好的修改。<button class="btn" type="button" id="restoreBtn">還原</button><button class="tool" type="button" id="dropBtn">捨棄</button>');
+    document.getElementById('restoreBtn').onclick=function(){lines=d.md.split('\n');editing=true;note('');draw();};
+    document.getElementById('dropBtn').onclick=function(){try{localStorage.removeItem(SKEY);}catch(e){}note('');};
+  }catch(e){}
+}
+
+draw();
+if(window.claude&&typeof window.claude.use==='function'){
+  window.claude.use('artifact').then(function(ns){artifactNs=ns;mode=ns?'artifact':null;updateEditUI();if(ns)offerRestore();},function(){});
+}else{mode='download';updateEditUI();offerRestore();}
+})();
+</script>
+</body>
+</html>
