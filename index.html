@@ -19,11 +19,11 @@
 <meta name="twitter:title" content="老壇主的時光廚房｜2027 新春團拜排練本">
 <meta name="twitter:description" content="查看完整劇本、演出流程與 M1～M5 音樂試聽。">
 <meta name="twitter:image" content="og-image.jpg">
-<link rel="prefetch" href="music/M1.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M2.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M3.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M4.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M5.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M1-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M2-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M3-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M4-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M5-web.mp3" as="audio" type="audio/mpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
@@ -327,9 +327,10 @@ function shell(introHtml){
 }
 
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
+var MUSIC_FILES={1:'M1-web.mp3',2:'M2-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
 function playMusic(i){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
-  if(audio.dataset.music!==String(i)){audio.src='music/M'+i+'.mp3';audio.dataset.music=String(i);}
+  if(audio.dataset.music!==String(i)){audio.src='music/'+MUSIC_FILES[i];audio.dataset.music=String(i);}
   document.getElementById('musicTitle').textContent=MUSIC_NAMES[i]||('M'+i);
   document.getElementById('musicStatus').textContent='載入中…';
   dock.hidden=false;document.body.classList.add('has-music');
