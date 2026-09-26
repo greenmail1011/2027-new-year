@@ -19,6 +19,11 @@
 <meta name="twitter:title" content="老壇主的時光廚房｜2027 新春團拜排練本">
 <meta name="twitter:description" content="查看完整劇本、演出流程與 M1～M5 音樂試聽。">
 <meta name="twitter:image" content="og-image.jpg">
+<link rel="prefetch" href="music/M1-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M2-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M3-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M4-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M5-web.mp3" as="audio" type="audio/mpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
@@ -314,14 +319,15 @@ function shell(introHtml){
   '<main id="main"></main>'+
   '<p class="foot" id="foot">角色篩選與展開狀態只存在你自己的瀏覽器。台詞修改要按「儲存」或「下載新版」並更新網站後，其他人才會看到。</p>'+
   '</div>'+
-  '<aside class="musicdock" id="musicDock" aria-label="劇本音樂播放器" hidden><div class="musicdock-inner"><span class="musicnow"><small>正在播放</small><strong id="musicTitle">劇本音樂</strong></span><audio id="musicAudio" controls preload="none"></audio><button class="musicclose" id="musicClose" type="button" aria-label="關閉音樂播放器">×</button></div></aside>';
+  '<aside class="musicdock" id="musicDock" aria-label="劇本音樂播放器" hidden><div class="musicdock-inner"><span class="musicnow"><small id="musicStatus">準備播放</small><strong id="musicTitle">劇本音樂</strong></span><audio id="musicAudio" controls preload="auto"></audio><button class="musicclose" id="musicClose" type="button" aria-label="關閉音樂播放器">×</button></div></aside>';
 }
 
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
 function playMusic(i){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
-  if(audio.dataset.music!==String(i)){audio.src='music/M'+i+'.mp3';audio.dataset.music=String(i);}
+  if(audio.dataset.music!==String(i)){audio.src='music/M'+i+'-web.mp3';audio.dataset.music=String(i);audio.load();}
   document.getElementById('musicTitle').textContent=MUSIC_NAMES[i]||('M'+i);
+  document.getElementById('musicStatus').textContent='載入中…';
   dock.hidden=false;document.body.classList.add('has-music');
   [].slice.call(document.querySelectorAll('.music-link')).forEach(function(b){b.setAttribute('aria-current',String(+b.dataset.music===i));});
   var p=audio.play();if(p&&p.catch)p.catch(function(){});
@@ -394,6 +400,9 @@ function bindShell(){
   document.getElementById('histClose').onclick=function(){document.getElementById('hist').hidden=true;};
   document.getElementById('histList').addEventListener('click',function(e){var b=e.target.closest('[data-h]');if(b)loadHist(+b.dataset.h);});
   document.getElementById('saveBtn').onclick=save;
+  document.getElementById('musicAudio').addEventListener('playing',function(){document.getElementById('musicStatus').textContent='正在播放';});
+  document.getElementById('musicAudio').addEventListener('waiting',function(){document.getElementById('musicStatus').textContent='載入中…';});
+  document.getElementById('musicAudio').addEventListener('pause',function(){if(this.currentTime&&!this.ended)document.getElementById('musicStatus').textContent='已暫停';});
   document.getElementById('musicClose').onclick=function(){var a=document.getElementById('musicAudio');a.pause();document.getElementById('musicDock').hidden=true;document.body.classList.remove('has-music');[].slice.call(document.querySelectorAll('.music-link')).forEach(function(b){b.removeAttribute('aria-current');});};
   var main=document.getElementById('main');
   main.addEventListener('click',function(e){var b=e.target.closest('.music-link');if(b){e.preventDefault();e.stopPropagation();playMusic(+b.dataset.music);}});
