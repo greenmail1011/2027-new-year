@@ -49,14 +49,16 @@ h1 .mark{color:var(--accent)}
 .vrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;color:var(--muted)}
 .pill{display:inline-block;border:1px solid var(--accent);color:var(--accent);border-radius:999px;padding:1px 10px;font-size:13px;background:var(--surface)}
 .vrow a{color:var(--accent);text-underline-offset:3px}
-.music-link{display:inline-flex;align-items:center;gap:.28em;margin:0;padding:0;border:0;background:none;color:var(--accent);font:inherit;font-weight:700;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;white-space:nowrap;cursor:pointer}
-.music-link::after{content:"▶";display:inline-grid;place-items:center;width:1.35em;height:1.35em;border-radius:50%;background:var(--accent);color:#fff;font-size:.62em;line-height:1}
-.music-link:hover{color:#8F251E}
+.music-link{display:inline-flex;align-items:center;gap:.38em;margin:0 .12em;padding:.12em .55em;border:1px solid #E8AAA3;border-radius:999px;background:linear-gradient(135deg,#FFF8F6,var(--accent-soft));box-shadow:0 2px 8px rgba(196,54,43,.13);color:var(--accent);font:inherit;font-weight:700;text-decoration:none;white-space:nowrap;cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s}
+.music-link::after{content:"▶ 播放";display:inline-flex;align-items:center;padding:.08em .45em;border-radius:999px;background:var(--accent);color:#fff;font-size:.68em;line-height:1.45;letter-spacing:.04em}
+.music-link:hover{color:#8F251E;background:#fff;transform:translateY(-1px);box-shadow:0 5px 14px rgba(196,54,43,.22)}
 .music-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 .music-link[aria-current="true"]{color:var(--act)}
-.music-link[aria-current="true"]::after{content:"♪";background:var(--act)}
-.musicstage{scroll-margin-top:120px}
-.automusic[aria-pressed="true"]{background:var(--act);border-color:var(--act);color:#fff}
+.music-link[aria-current="true"]::after{content:"♪ 播放中";background:var(--act)}
+.music-primary{animation:musicGlow 2.4s ease-in-out infinite}
+.music-primary[aria-current="true"]{animation:none}
+@keyframes musicGlow{0%,100%{box-shadow:0 2px 8px rgba(196,54,43,.13)}50%{box-shadow:0 3px 18px rgba(196,54,43,.38)}}
+@media(prefers-reduced-motion:reduce){.music-primary{animation:none}}
 .musicdock{position:fixed;z-index:20;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(760px,calc(100% - 24px));padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.97);box-shadow:0 12px 38px rgba(31,38,34,.25);backdrop-filter:blur(12px)}
 .musicdock-inner{display:grid;grid-template-columns:minmax(90px,auto) minmax(180px,1fr) auto;gap:10px;align-items:center}
 .musicnow{display:grid;line-height:1.3}.musicnow small{color:var(--muted)}.musicnow strong{color:var(--ink)}
@@ -313,7 +315,7 @@ function shell(introHtml){
   '<div class="intro">'+introHtml+'</div></header>'+
   '<div class="bar" role="toolbar" aria-label="劇本工具">'+
     '<div class="chips" id="chips">'+['','阿嬤','阿誠','麗玲','小寶','妞妞','春嬌','門神'].map(function(r){return '<button class="chip" type="button" data-role="'+r+'" aria-pressed="false">'+(r||'全部')+'</button>';}).join('')+'</div>'+
-    '<div class="barrow"><span id="count"></span><span class="tools"><button class="btn automusic" type="button" id="autoMusicBtn" aria-pressed="false">啟用滑動播放</button><button class="tool" type="button" id="openAll">全部展開</button><button class="tool" type="button" id="closeAll">全部收合</button><button class="tool" type="button" id="histBtn" hidden>修改紀錄</button><button class="btn" type="button" id="editBtn" hidden>編輯台詞</button></span></div>'+
+    '<div class="barrow"><span id="count"></span><span class="tools"><button class="tool" type="button" id="openAll">全部展開</button><button class="tool" type="button" id="closeAll">全部收合</button><button class="tool" type="button" id="histBtn" hidden>修改紀錄</button><button class="btn" type="button" id="editBtn" hidden>編輯台詞</button></span></div>'+
     '<div class="editbar" id="editbar" hidden><span class="msg" id="editmsg">點虛線框直接改字，改完按「儲存」。<span class="hint-wide">（）是舞台動作、【】是提示、〔〕是語氣，照原本的符號寫就好。</span></span><label class="namef" id="namef" hidden>你的名字<input id="editorName" type="text" maxlength="20" placeholder="會記在修改紀錄" autocomplete="name"></label><button class="btn" type="button" id="cancelBtn">放棄修改</button><button class="btn primary" type="button" id="saveBtn" disabled>儲存</button></div>'+
     '<div class="notice" id="notice" hidden></div>'+
     '<div class="hist" id="hist" hidden><div class="histhead"><strong>修改紀錄</strong><span>每次儲存都會留一筆，新的在上面；按「載回這版」可回到那個版本</span><button class="tool" type="button" id="histClose">關閉</button></div><ol id="histList"></ol></div>'+
@@ -325,7 +327,6 @@ function shell(introHtml){
 }
 
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
-var autoMusic=false,autoObserver=null,autoTrack=0,autoStages=[];
 function playMusic(i){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
   if(audio.dataset.music!==String(i)){audio.src='music/M'+i+'.mp3';audio.dataset.music=String(i);}
@@ -335,29 +336,12 @@ function playMusic(i){
   [].slice.call(document.querySelectorAll('.music-link')).forEach(function(b){b.setAttribute('aria-current',String(+b.dataset.music===i));});
   var p=audio.play();if(p&&p.catch)p.catch(function(){document.getElementById('musicStatus').textContent='請按播放器的播放鍵';});
 }
-function setupAutoMusic(){
-  if(autoObserver)autoObserver.disconnect();autoStages=[];
+function highlightMusicCues(){
   var used={};
   [].slice.call(document.querySelectorAll('.script .music-link')).forEach(function(b){
     var i=+b.dataset.music;if(used[i])return;used[i]=true;
-    var stage=b.closest('details')||b;stage.dataset.autoMusic=String(i);stage.classList.add('musicstage');autoStages.push(stage);
+    b.classList.add('music-primary');
   });
-  if(!('IntersectionObserver' in window))return;
-  autoObserver=new IntersectionObserver(function(entries){
-    if(!autoMusic)return;
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){var i=+entry.target.dataset.autoMusic;if(i&&i!==autoTrack){autoTrack=i;playMusic(i);}}
-    });
-  },{rootMargin:'-20% 0px -65% 0px',threshold:0});
-  autoStages.forEach(function(stage){autoObserver.observe(stage);});
-}
-function toggleAutoMusic(){
-  autoMusic=!autoMusic;var btn=document.getElementById('autoMusicBtn');
-  btn.setAttribute('aria-pressed',String(autoMusic));btn.textContent=autoMusic?'滑動播放：開':'啟用滑動播放';
-  if(!autoMusic){var a=document.getElementById('musicAudio');a.pause();autoTrack=0;return;}
-  var y=innerHeight*.35,best=null,dist=Infinity;
-  autoStages.forEach(function(stage){var d=Math.abs(stage.getBoundingClientRect().top-y);if(d<dist){dist=d;best=stage;}});
-  if(best){autoTrack=+best.dataset.autoMusic;playMusic(autoTrack);}
 }
 
 function draw(){
@@ -374,7 +358,7 @@ function draw(){
   all.forEach(function(d){d.addEventListener('toggle',rememberOpen);});
   applyRole(pref.role||'',false);
   updateEditUI();
-  setupAutoMusic();
+  highlightMusicCues();
 }
 function rememberOpen(){pref.open=[].slice.call(document.querySelectorAll('#main details')).filter(function(d){return d.open;}).map(function(d){return d.id;});savePref();}
 
@@ -418,7 +402,6 @@ function note(html){var n=document.getElementById('notice');if(!html){n.hidden=t
 function lineAt(i){return lines[i];}
 function bindShell(){
   document.getElementById('chips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)applyRole(c.dataset.role,true);});
-  document.getElementById('autoMusicBtn').onclick=toggleAutoMusic;
   document.getElementById('openAll').onclick=function(){[].slice.call(document.querySelectorAll('#main details')).forEach(function(d){d.open=true;});rememberOpen();};
   document.getElementById('closeAll').onclick=function(){[].slice.call(document.querySelectorAll('#main details')).forEach(function(d){d.open=false;});rememberOpen();};
   document.getElementById('editBtn').onclick=function(){needUser(function(){editing=true;draw();note('');});};
