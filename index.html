@@ -337,9 +337,9 @@ function shell(introHtml){
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
 var MUSIC_FILES={1:'M1-web.mp3',2:'M2-v3-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
 var MUSIC_VERSIONS={2:[
-  {v:'v3',file:'M2-v3-web.mp3',note:'v3｜依照 v2 的風格，結合 v1 的朗朗上口（目前採用）'},
-  {v:'v2',file:'M2-v2-web.mp3',note:'v2｜合併節奏與過年感，但感覺不夠重複'},
-  {v:'v1',file:'M2-v1-web.mp3',note:'v1｜晴宣朗朗上口版'}]};
+  {v:'v3',file:'M2-v3-web.mp3',note:'v3｜依照 v2 的風格，結合 v1 的朗朗上口（最新生成）'},
+  {v:'v2',file:'M2-v2-web.mp3',note:'v2｜合併節奏與過年感，但感覺不夠重複（不夠洗腦）'},
+  {v:'v1',file:'M2-v1-web.mp3',note:'v1｜晴宣朗朗上口版，但可增加節奏，比較好排舞'}]};
 function playMusic(i,vi){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
   var vers=MUSIC_VERSIONS[i],ver=vers?vers[vi||0]:null,key=i+(ver?'-'+ver.v:'');
