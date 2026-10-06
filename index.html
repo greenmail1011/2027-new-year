@@ -20,7 +20,7 @@
 <meta name="twitter:description" content="查看完整劇本、演出流程與 M1～M5 音樂試聽。">
 <meta name="twitter:image" content="og-image.jpg">
 <link rel="prefetch" href="music/M1-web.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M2-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M2-v3-web.mp3" as="audio" type="audio/mpeg">
 <link rel="prefetch" href="music/M3-web.mp3" as="audio" type="audio/mpeg">
 <link rel="prefetch" href="music/M4-web.mp3" as="audio" type="audio/mpeg">
 <link rel="prefetch" href="music/M5-web.mp3" as="audio" type="audio/mpeg">
@@ -55,17 +55,22 @@ h1 .mark{color:var(--accent)}
 .music-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
 .music-link[aria-current="true"]{color:var(--act)}
 .music-link[aria-current="true"]::after{content:"♪ 播放中";background:var(--act)}
+.video-link{display:inline-flex;align-items:center;gap:.32em;margin:0 .12em;padding:.12em .55em;border:1px solid #1F2622;border-radius:999px;background:#1F2622;color:#fff;font:inherit;font-size:.86em;font-weight:700;line-height:1.5;text-decoration:none;white-space:nowrap;box-shadow:0 2px 8px rgba(31,38,34,.16);transition:transform .18s,box-shadow .18s,background .18s}
+.video-link::before{content:"";width:0;height:0;border-style:solid;border-width:.32em 0 .32em .52em;border-color:transparent transparent transparent currentColor}
+.video-link:hover{background:var(--accent);border-color:var(--accent);transform:translateY(-1px);box-shadow:0 5px 14px rgba(196,54,43,.22)}
+.video-link:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .music-primary{animation:musicGlow 2.4s ease-in-out infinite}
 .music-primary[aria-current="true"]{animation:none}
 @keyframes musicGlow{0%,100%{box-shadow:0 2px 8px rgba(196,54,43,.13)}50%{box-shadow:0 3px 18px rgba(196,54,43,.38)}}
 @media(prefers-reduced-motion:reduce){.music-primary{animation:none}}
 .musicdock{position:fixed;z-index:20;left:50%;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(760px,calc(100% - 24px));padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.97);box-shadow:0 12px 38px rgba(31,38,34,.25);backdrop-filter:blur(12px)}
-.musicdock-inner{display:grid;grid-template-columns:minmax(90px,auto) minmax(180px,1fr) auto;gap:10px;align-items:center}
+.musicdock-inner{display:grid;grid-template-columns:minmax(90px,auto) minmax(180px,1fr) auto auto;gap:10px;align-items:center}
 .musicnow{display:grid;line-height:1.3}.musicnow small{color:var(--muted)}.musicnow strong{color:var(--ink)}
 .musicdock audio{display:block;width:100%;height:36px}
+.musicvers{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}.musicvers[hidden]{display:none}.musicvers button{height:28px;min-width:38px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:700;cursor:pointer}.musicvers button[aria-pressed="true"]{background:var(--accent);color:#fff}.musicnote{grid-column:1/-1;margin:2px 2px 0;color:var(--muted);font-size:13px;line-height:1.45}.musicnote[hidden]{display:none}
 .musicclose{width:34px;height:34px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--muted);font:inherit;font-size:20px;line-height:1;cursor:pointer}
 body.has-music .wrap{padding-bottom:150px}
-@media(max-width:520px){.musicdock-inner{grid-template-columns:1fr auto}.musicdock audio{grid-column:1/-1;grid-row:2}.musicnow{min-width:0}}
+@media(max-width:520px){.musicdock-inner{grid-template-columns:1fr auto auto}.musicdock audio{grid-column:1/-1;grid-row:2}.musicnow{min-width:0}}
 .intro{font-size:15px;color:var(--muted);display:grid;gap:4px}
 .intro p{margin:0}
 .intro strong{color:var(--ink)}
@@ -199,12 +204,15 @@ var pref={};
 try{pref=JSON.parse(localStorage.getItem(LKEY)||'{}')||{};}catch(e){pref={};}
 function savePref(){try{localStorage.setItem(LKEY,JSON.stringify(pref));}catch(e){}}
 
+var MUSIC_VIDEOS={5:'https://www.youtube.com/watch?v=bSU0f719Rtk'};
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function inline(t,dlg){
   t=esc(t);
   t=t.replace(/(?:M|Ｍ)([1-5１-５])/g,function(label,n){
     var full='１２３４５'.indexOf(n),i=full>=0?full+1:Number(n);
-    return '<button class="music-link" type="button" data-music="'+i+'" title="在本頁播放 M'+i+' 音樂">'+label+'</button>';
+    var btn='<button class="music-link" type="button" data-music="'+i+'" title="在本頁播放 M'+i+' 音樂">'+label+'</button>';
+    if(MUSIC_VIDEOS[i])btn+='<a class="video-link" href="'+MUSIC_VIDEOS[i]+'" target="_blank" rel="noopener" title="在 YouTube 開啟 M'+i+' 參考影片">影片</a>';
+    return btn;
   });
   t=t.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
   t=t.replace(/【([^】]*)】/g,'<span class="cue">$1</span>');
@@ -323,15 +331,25 @@ function shell(introHtml){
   '<main id="main"></main>'+
   '<p class="foot" id="foot">角色篩選與展開狀態只存在你自己的瀏覽器。台詞修改要按「儲存」或「下載新版」並更新網站後，其他人才會看到。</p>'+
   '</div>'+
-  '<aside class="musicdock" id="musicDock" aria-label="劇本音樂播放器" hidden><div class="musicdock-inner"><span class="musicnow"><small id="musicStatus">準備播放</small><strong id="musicTitle">劇本音樂</strong></span><audio id="musicAudio" controls preload="metadata" playsinline></audio><button class="musicclose" id="musicClose" type="button" aria-label="關閉音樂播放器">×</button></div></aside>';
+  '<aside class="musicdock" id="musicDock" aria-label="劇本音樂播放器" hidden><div class="musicdock-inner"><span class="musicnow"><small id="musicStatus">準備播放</small><strong id="musicTitle">劇本音樂</strong></span><audio id="musicAudio" controls preload="metadata" playsinline></audio><span class="musicvers" id="musicVers" role="group" aria-label="選擇版本" hidden></span><button class="musicclose" id="musicClose" type="button" aria-label="關閉音樂播放器">×</button><p class="musicnote" id="musicNote" hidden></p></div></aside>';
 }
 
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
-var MUSIC_FILES={1:'M1-web.mp3',2:'M2-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
-function playMusic(i){
+var MUSIC_FILES={1:'M1-web.mp3',2:'M2-v3-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
+var MUSIC_VERSIONS={2:[
+  {v:'v3',file:'M2-v3-web.mp3',note:'v3｜依照 v2 的風格，結合 v1 的朗朗上口（目前採用）'},
+  {v:'v2',file:'M2-v2-web.mp3',note:'v2｜合併節奏與過年感，但感覺不夠重複'},
+  {v:'v1',file:'M2-v1-web.mp3',note:'v1｜晴宣朗朗上口版'}]};
+function playMusic(i,vi){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
-  if(audio.dataset.music!==String(i)){audio.src='music/'+MUSIC_FILES[i];audio.dataset.music=String(i);}
-  document.getElementById('musicTitle').textContent=MUSIC_NAMES[i]||('M'+i);
+  var vers=MUSIC_VERSIONS[i],ver=vers?vers[vi||0]:null,key=i+(ver?'-'+ver.v:'');
+  if(audio.dataset.music!==key){audio.src='music/'+(ver?ver.file:MUSIC_FILES[i]);audio.dataset.music=key;}
+  document.getElementById('musicTitle').textContent=(MUSIC_NAMES[i]||('M'+i))+(ver?' '+ver.v:'');
+  var vb=document.getElementById('musicVers'),nt=document.getElementById('musicNote');
+  if(vers){vb.hidden=false;nt.hidden=false;nt.textContent=ver.note;
+    vb.innerHTML=vers.map(function(x,k){return '<button type="button" data-k="'+k+'" aria-pressed="'+(x===ver)+'" title="'+esc(x.note)+'">'+x.v+'</button>';}).join('');
+    [].slice.call(vb.querySelectorAll('button')).forEach(function(b){b.onclick=function(){playMusic(i,+b.dataset.k);};});
+  }else{vb.hidden=true;nt.hidden=true;vb.innerHTML='';}
   document.getElementById('musicStatus').textContent='載入中…';
   dock.hidden=false;document.body.classList.add('has-music');
   [].slice.call(document.querySelectorAll('.music-link')).forEach(function(b){b.setAttribute('aria-current',String(+b.dataset.music===i));});
