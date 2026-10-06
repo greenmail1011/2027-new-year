@@ -19,11 +19,11 @@
 <meta name="twitter:title" content="老壇主的時光廚房｜2027 新春團拜排練本">
 <meta name="twitter:description" content="查看完整劇本、演出流程與 M1～M5 音樂試聽。">
 <meta name="twitter:image" content="og-image.jpg">
-<link rel="prefetch" href="music/M1-web.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M2-v3-web.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M3-web.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M4-web.mp3" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M5-web.mp3" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M1-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M2-v3-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M3-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M4-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M5-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
@@ -336,6 +336,8 @@ function shell(introHtml){
 
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
 var MUSIC_FILES={1:'M1-web.mp3',2:'M2-v3-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
+// 換任何音檔後，把 MUSIC_REV 改成新的值（例如日期＋字母），所有人會立刻抓新檔；開頭的 prefetch 連結也一起改
+var MUSIC_REV='20261006c';
 var MUSIC_VERSIONS={2:[
   {v:'v3',file:'M2-v3-web.mp3',note:'v3｜依照 v2 的風格，結合 v1 的朗朗上口（最新生成）'},
   {v:'v2',file:'M2-v2-web.mp3',note:'v2｜合併節奏與過年感，但感覺不夠重複（不夠洗腦）'},
@@ -343,7 +345,7 @@ var MUSIC_VERSIONS={2:[
 function playMusic(i,vi){
   var dock=document.getElementById('musicDock'),audio=document.getElementById('musicAudio');
   var vers=MUSIC_VERSIONS[i],ver=vers?vers[vi||0]:null,key=i+(ver?'-'+ver.v:'');
-  if(audio.dataset.music!==key){audio.src='music/'+(ver?ver.file:MUSIC_FILES[i]);audio.dataset.music=key;}
+  if(audio.dataset.music!==key){audio.src='music/'+(ver?ver.file:MUSIC_FILES[i])+'?v='+MUSIC_REV;audio.dataset.music=key;}
   document.getElementById('musicTitle').textContent=(MUSIC_NAMES[i]||('M'+i))+(ver?' '+ver.v:'');
   var vb=document.getElementById('musicVers'),nt=document.getElementById('musicNote');
   if(vers){vb.hidden=false;nt.hidden=false;nt.textContent=ver.note;
