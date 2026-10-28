@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="2027 教定區新春團拜：勾選 11 月～1 月週二、週六晚上可以來排練的日期。">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="2027 教定區新春團拜">
+<meta property="og:title" content="排練時間調查｜2027 新春團拜">
+<meta property="og:description" content="請在 10/30 前勾選 11 月～1 月週二、週六晚上可以來排練的日期。">
+<meta property="og:image" content="https://greenmail1011.github.io/2027-new-year/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>新春團拜排練調查</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
+<style>
+/* Layout: 單欄表單，日期像撕頁月曆（紅色月份帶），統計用橫條；手機寬度時按鈕換到下一行 */
+:root{
+  --bg:#F5F7F4; --surface:#FFFFFF; --ink:#1F2622; --muted:#5F6A63; --line:#E0E5DF;
+  --accent:#C4362B; --accent-ink:#FFFFFF; --accent-soft:#FDECE9;
+  --yes:#2E7560; --yes-soft:#E3F1EB; --maybe:#B7791F; --maybe-soft:#FBF0DC; --no:#8A8F8C; --no-soft:#EDEFEE;
+  --off:#EEF0ED; --focus:#2563EB; color-scheme:light;
+  --serif:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+/* 固定亮色系：不跟系統深色模式切換 */
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.7;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--serif);text-wrap:balance;margin:0;line-height:1.35}
+h1{font-size:30px}
+h2{font-size:21px}
+h3{font-size:17px}
+.eyebrow{font-size:13px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+.lead{color:var(--muted);margin:8px 0 0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.fact{font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.fact b{color:var(--accent)}
+.status{font-size:13px;color:var(--muted);margin-top:10px}
+.notice{margin:14px 0 0;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:6px;padding:10px 14px;font-size:15px;font-weight:500}
+.notice b{color:var(--accent)}
+.status.warn{color:var(--accent)}
+
+.tabs{display:flex;gap:4px;margin:22px 0 18px;border-bottom:1px solid var(--line)}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+section.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:12px;margin-bottom:16px}
+.step-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.step-no{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:15px}
+.hint{font-size:14px;color:var(--muted);margin:0}
+
+.group-label{font-size:13px;color:var(--muted);letter-spacing:.06em;margin-bottom:6px}
+.names{display:flex;flex-wrap:wrap;gap:8px}
+.name{appearance:none;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.name small{color:var(--muted);font-size:12px}
+.name.done{border-color:var(--yes);background:var(--yes-soft)}
+.name .tag{font-size:12px;color:var(--yes);font-weight:700}
+.name[aria-pressed="true"] .tag{color:var(--accent-ink)}
+.name[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.name[aria-pressed="true"] small{color:var(--accent-ink);opacity:.85}
+.other{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.other input,.other select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.other input{width:9em}
+.chosen{font-size:14px;color:var(--yes);font-weight:500}
+
+.month{display:grid;gap:8px}
+.month + .month{margin-top:10px}
+.month-title{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.cal{width:54px;border:1px solid var(--line);border-radius:6px;overflow:hidden;text-align:center;background:var(--surface);font-variant-numeric:tabular-nums}
+.cal .m{background:var(--accent);color:var(--accent-ink);font-size:11px;line-height:18px;letter-spacing:.08em}
+.cal .d{font-family:var(--serif);font-size:20px;font-weight:700;line-height:26px}
+.cal .w{font-size:11px;color:var(--muted);line-height:16px;padding-bottom:2px}
+.info{min-width:0}
+.info .t{font-weight:500}
+.info .n{font-size:13px;color:var(--muted)}
+.row.off{opacity:.62}
+.row.off .cal .m{background:var(--no)}
+.off-tag{font-size:13px;color:var(--muted);white-space:nowrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{appearance:none;font:inherit;font-size:14px;border:0;background:var(--surface);color:var(--muted);padding:6px 12px;cursor:pointer;min-width:52px}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"][data-v="y"]{background:var(--yes);color:#fff}
+.seg button[aria-pressed="true"][data-v="m"]{background:var(--maybe);color:#fff}
+.seg button[aria-pressed="true"][data-v="n"]{background:var(--no);color:#fff}
+.seg button:disabled{cursor:not-allowed}
+.bulk{display:flex;gap:8px;flex-wrap:wrap}
+.btn{appearance:none;font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;padding:10px 22px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+textarea{width:100%;min-height:72px;resize:vertical}
+.submit{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.progress{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.card .k{font-size:13px;color:var(--muted)}
+.card .v{font-family:var(--serif);font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.picks{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pick{font-size:13px;background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-weight:700;font-variant-numeric:tabular-nums}
+.res-row{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line);align-items:start}
+.res-row:first-of-type{border-top:0}
+.res-main{min-width:0;display:grid;gap:4px}
+.res-top{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.badge{font-size:12px;font-weight:700;color:var(--accent-ink);background:var(--accent);border-radius:4px;padding:0 6px}
+.bar{display:flex;height:10px;border-radius:5px;background:var(--off);overflow:hidden}
+.bar span{display:block;height:100%}
+.bar .y{background:var(--yes)}
+.bar .m{background:var(--maybe)}
+.bar .n{background:var(--no);opacity:.5}
+.counts{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;gap:12px;flex-wrap:wrap}
+.counts .cy{color:var(--yes);font-weight:700}
+.counts .cm{color:var(--maybe);font-weight:700}
+details{font-size:14px}
+details summary{cursor:pointer;color:var(--muted)}
+.who{display:grid;gap:2px;margin-top:4px}
+.who b{font-weight:500}
+.pending{display:flex;flex-wrap:wrap;gap:6px}
+.pending span{font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+.fixed{display:grid;gap:6px;font-size:15px}
+.fixed div{display:flex;gap:10px}
+.fixed b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;font-size:15px;box-shadow:0 6px 20px rgba(0,0,0,.18);max-width:calc(100% - 32px)}
+.empty{color:var(--muted);font-size:15px;padding:8px 0}
+.step-head .viewtog{margin-left:auto}
+.viewtog{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.viewtog button{appearance:none;font:inherit;font-size:14px;border:0;background:var(--surface);color:var(--muted);padding:4px 14px;cursor:pointer}
+.viewtog button + button{border-left:1px solid var(--line)}
+.viewtog button[aria-pressed="true"]{background:var(--ink);color:var(--surface);font-weight:700}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.calhd{font-size:12px;color:var(--muted);text-align:center;padding-bottom:2px}
+.calhd.on{color:var(--accent);font-weight:700}
+.cell{position:relative;min-height:60px;border-radius:8px;border:1px solid transparent;padding:6px 2px 4px;display:flex;flex-direction:column;align-items:center;gap:1px;font-variant-numeric:tabular-nums;min-width:0}
+.cell .dn{font-family:var(--serif);font-weight:700;font-size:17px;line-height:1.2}
+.cell .st{font-size:12px;font-weight:700;white-space:nowrap}
+.cell .cnt{font-size:11px;white-space:nowrap}
+.cell.muted{color:var(--muted);opacity:.4}
+.cell.off{background:var(--off);color:var(--muted)}
+.cell.off .st{font-weight:500}
+button.cell{appearance:none;font:inherit;background:var(--surface);border-color:var(--line);color:var(--ink);cursor:pointer}
+button.cell:disabled{cursor:not-allowed;opacity:.65}
+button.cell .st{color:var(--muted)}
+.cell.v-y{background:var(--yes);border-color:var(--yes);color:#fff}
+.cell.v-m{background:var(--maybe);border-color:var(--maybe);color:#fff}
+.cell.v-n{background:var(--no);border-color:var(--no);color:#fff}
+.cell.v-y .st,.cell.v-m .st,.cell.v-n .st{color:#fff}
+.cell .mk{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.cell.r .st{color:inherit}
+.cell.pick{border:2px solid var(--accent)}
+.cell.sel{box-shadow:0 0 0 2px var(--focus)}
+.calnotes{font-size:13px;color:var(--muted);display:grid;gap:2px;margin-top:10px}
+.calnotes b{color:var(--ink);font-weight:500}
+.caldetail{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;display:grid;gap:6px}
+@media (max-width:420px){.cell{min-height:54px}.cell .dn{font-size:15px}.cell .st{font-size:11px}}
+@media (max-width:560px){
+  h1{font-size:25px}
+  .row{grid-template-columns:auto 1fr}
+  .row .seg,.row .off-tag{grid-column:1 / -1}
+  .seg{display:flex}
+  .seg button{flex:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">2027 教定區新春團拜｜老壇主的時光廚房</div>
+    <h1>排練時間調查</h1>
+    <p class="lead">請在 <b>10/30（五）</b>前，勾選 11 月到 1 月中，你哪幾個週二、週六晚上可以來排練。我們會挑出最多人能到的日子，每個月排 2～3 次。</p>
+    <p class="notice">只要時間可以，<b>請務必都選上「可以」</b>。我們會挑人數集合最多的日子安排練習，選得越多，越容易排到大家都能來的時間。</p>
+    <div class="facts">
+      <span class="fact">時段：<b>週二、週六晚上</b>（實際時間以群組通知為準）</span>
+      <span class="fact">一次填完，之後可回來修改</span>
+    </div>
+    <div class="status" id="status">正在連線資料庫…</div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-fill" aria-selected="true" aria-controls="view-fill">我要填寫</button>
+    <button class="tab" role="tab" id="tab-result" aria-selected="false" aria-controls="view-result">統計結果</button>
+  </nav>
+
+  <main id="view-fill" role="tabpanel" aria-labelledby="tab-fill">
+    <section class="step">
+      <div class="step-head"><span class="step-no">一</span><h2>你是誰？</h2></div>
+      <p class="hint">點自己的名字。標「✓ 已填」的人已經填過，點了會載入上次的答案，可以直接修改日期。家長可以幫小朋友填。</p>
+      <div class="progress" id="fill-count"></div>
+      <div id="names"></div>
+      <div class="other">
+        <span class="hint">名單上沒有我：</span>
+        <input id="other-name" maxlength="12" placeholder="輸入姓名" autocomplete="name">
+        <select id="other-group" aria-label="組別">
+          <option value="drama">戲劇組</option>
+          <option value="door">門神組</option>
+          <option value="crew" selected>編舞／其他</option>
+        </select>
+        <button class="btn" id="other-ok" type="button">用這個名字</button>
+      </div>
+      <div class="chosen" id="chosen" hidden></div>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><span class="step-no">二</span><h2>哪幾天晚上可以來？</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
+      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。灰色的日子是會議中已決定不排練的。</p>
+      <div class="bulk">
+        <button class="btn" type="button" id="all-yes">全部先設成「可以」</button>
+        <button class="btn" type="button" id="all-clear">清除重選</button>
+      </div>
+      <div id="dates"></div>
+    </section>
+
+    <section class="step">
+      <div class="step-head"><span class="step-no">三</span><h2>備註（選填）</h2></div>
+      <textarea id="note" maxlength="300" placeholder="例如：週二要 8 點後才到、1 月下旬在外地…"></textarea>
+      <div class="submit">
+        <button class="btn primary" id="submit" type="button" disabled>送出</button>
+        <span class="progress" id="progress"></span>
+      </div>
+    </section>
+  </main>
+
+  <main id="view-result" role="tabpanel" aria-labelledby="tab-result" hidden>
+    <div class="summary">
+      <div class="card"><div class="k">已填寫</div><div class="v" id="sum-count">0</div><div class="k" id="sum-of"></div></div>
+      <div class="card"><div class="k">建議排練日（目前最多人能到）</div><div class="picks" id="sum-picks"><span class="empty">還沒有人填寫</span></div></div>
+    </div>
+    <section class="step">
+      <div class="step-head"><h2>各日期出席人數</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
+      <p class="hint">依「可以」的人數排名，同票再看「可能」；每月取前幾名當建議（11 月 2 天、12 月 3 天、1 月 3 天）。點「名單」看誰可以、誰不行。</p>
+      <div id="results"></div>
+    </section>
+    <section class="step">
+      <div class="step-head"><h2>已填寫</h2></div>
+      <p class="hint">點名字可以回去修改那個人的日期；名字旁是最後更新時間。</p>
+      <div class="names" id="filled"></div>
+    </section>
+    <section class="step">
+      <div class="step-head"><h2>還沒填寫</h2></div>
+      <div class="pending" id="pending"></div>
+      <div id="notes"></div>
+    </section>
+    <section class="step">
+      <div class="step-head"><h2>已確定的日子</h2></div>
+      <div class="fixed">
+        <div><b>2/3（三）晚上</b><span>彌勒山試裝＋總彩排，當天在彌勒山用晚餐</span></div>
+        <div><b>2/4（四）</b><span>先保留，視狀況決定是否加排</span></div>
+        <div><b>2/6（六）</b><span>新春團拜演出</span></div>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function(){
+'use strict';
+// ── 設定：依第 4 次會議（2026/10/20）──────────────────────────
+var START='2026-11-14', END='2027-01-30';
+var OFF={ // 會議中說不能排的日子
+  '2026-11-21':'已有其他活動','2026-11-24':'人才班','2026-12-05':'已有其他活動',
+  '2026-12-08':'人才班','2027-01-02':'不排練','2027-01-16':'經理有會議'
+};
+var NOTE={
+  '2026-11-14':'會議暫定的第一次排練（原訂下午 2 點）',
+  '2026-11-17':'原場地當天有高階禪修班，若選中需另找場地',
+  '2026-12-22':'冬至',
+  '2027-01-09':'年前最後一次壇辦，晚上排練＋年末聚餐'
+};
+var PICKS={'2026-11':2,'2026-12':3,'2027-01':3};
+var GROUPS={drama:'戲劇組',door:'門神組',crew:'編舞／其他'};
+// 依角色與職司總表（10/28）；幕後道具、著裝人員暫不列入
+var MEMBERS=[
+  ['李冠德','drama','阿嬤'],['戴瑋德','drama','爸爸'],['陳羽芯','drama','媽媽'],['劉冠麟','drama','小寶'],['劉欣柔','drama','妞妞'],['林佳慧','drama','春嬌'],
+  ['黃家倍','door','主門神'],['周義順','door','主門神'],['陳錦秀','door','①組'],['周晴宣','door','①組'],['劉慶明','door','②組'],['彭永才','door','②組'],
+  ['李鉢卿','door','③組'],['張峻豪','door','③組'],['陳志杰','door','④組'],['周昱豪','door','④組'],['蘇湘澄','door','小門神'],['陳塏侖','door','小門神'],
+  ['江敏娟','crew','編舞']
+];
+var WD='日一二三四五六';
+
+// ── 日期 ─────────────────────────────────────────────
+function parse(s){var p=s.split('-');return new Date(Date.UTC(+p[0],+p[1]-1,+p[2]));}
+function key(d){return d.toISOString().slice(0,10);}
+var DATES=[];
+for(var d=parse(START);d<=parse(END);d=new Date(d.getTime()+864e5)){
+  var w=d.getUTCDay(); if(w!==2&&w!==6) continue;
+  var k=key(d); DATES.push({k:k,m:d.getUTCMonth()+1,day:d.getUTCDate(),w:w,ym:k.slice(0,7),off:OFF[k]||'',note:NOTE[k]||''});
+}
+var OPEN=DATES.filter(function(x){return !x.off;});
+function label(x){return x.m+'/'+x.day+'（'+WD[x.w]+'）';}
+
+// ── 狀態 ─────────────────────────────────────────────
+var rows={};           // id -> {name,group,answers,note,updatedAt}
+var me=null;           // {name,group}
+var answers={}, note='', dirty=false, saving=false;
+var store=null;
+
+function idOf(name){var b=new TextEncoder().encode(name),h='p';for(var i=0;i<b.length;i++)h+=('0'+b[i].toString(16)).slice(-2);return h;}
+var $=function(id){return document.getElementById(id);};
+function fmt(t){var d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+var VIEW='list';try{VIEW=localStorage.getItem('rh-view')==='cal'?'cal':'list';}catch(e){}
+function renderTogs(){
+  document.querySelectorAll('[data-tog]').forEach(function(t){
+    t.textContent='';
+    [['list','清單'],['cal','月曆']].forEach(function(o){
+      var b=el('button',null,o[1]);b.type='button';b.setAttribute('aria-pressed',VIEW===o[0]);
+      b.onclick=function(){VIEW=o[0];try{localStorage.setItem('rh-view',VIEW);}catch(e){}renderTogs();renderDates();if(!$('view-result').hidden)renderResults();};
+      t.appendChild(b);
+    });
+  });
+}
+function toast(t){var x=$('toast');x.textContent=t;x.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(function(){x.hidden=true;},2600);}
+function setStatus(t,warn){var s=$('status');s.textContent=t;s.className='status'+(warn?' warn':'');}
+
+// ── 分頁 ─────────────────────────────────────────────
+function show(which){
+  var fill=which!=='result';
+  $('tab-fill').setAttribute('aria-selected',fill);$('tab-result').setAttribute('aria-selected',!fill);
+  $('view-fill').hidden=!fill;$('view-result').hidden=fill;
+  if(!fill)renderResults();
+}
+$('tab-fill').onclick=function(){show('fill');try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}};
+$('tab-result').onclick=function(){show('result');try{location.hash='result';}catch(e){}};
+window.addEventListener('hashchange',function(){show(location.hash==='#result'?'result':'fill');});
+
+// ── 名單 ─────────────────────────────────────────────
+function renderNames(){
+  var box=$('names');box.textContent='';
+  Object.keys(GROUPS).forEach(function(g){
+    var list=MEMBERS.filter(function(m){return m[1]===g;});
+    // 名單外但已填寫的人也顯示在對應組別
+    Object.keys(rows).forEach(function(id){var r=rows[id];if(r.group===g&&!MEMBERS.some(function(m){return m[0]===r.name;}))list.push([r.name,g,'']);});
+    if(!list.length)return;
+    var wrap=el('div');wrap.appendChild(el('div','group-label',GROUPS[g]));
+    var names=el('div','names');
+    list.forEach(function(m){
+      var b=el('button','name');b.type='button';
+      var done=!!rows[idOf(m[0])];
+      if(done)b.classList.add('done');
+      b.appendChild(document.createTextNode(m[0]));
+      if(m[2])b.appendChild(el('small',null,m[2]));
+      if(done)b.appendChild(el('span','tag','✓ 已填'));
+      b.setAttribute('aria-pressed',!!(me&&me.name===m[0]));
+      b.onclick=function(){choose(m[0],m[1]);};
+      names.appendChild(b);
+    });
+    wrap.appendChild(names);box.appendChild(wrap);
+  });
+  box.style.display='grid';box.style.gap='12px';
+  var n=MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length;
+  $('fill-count').textContent='名單已填 '+n+' / '+MEMBERS.length+' 人';
+}
+function choose(name,group){
+  if(dirty&&me&&me.name!==name&&!choose._warned){choose._warned=true;toast('你剛才的勾選還沒送出，再點一次名字就會切換');return;}
+  choose._warned=false;
+  me={name:name,group:group};
+  var r=rows[idOf(name)];
+  answers=r&&r.answers?Object.assign({},r.answers):{};
+  note=r&&r.note||'';$('note').value=note;dirty=false;
+  var c=$('chosen');c.hidden=false;
+  c.textContent=r?('✓ '+name+(r.updatedAt?'：已在 '+fmt(r.updatedAt)+' 填過':'：已填過')+'，下面是你上次的答案，改好後按「更新我的答案」'):('✓ '+name+'：請往下勾選日期');
+  renderNames();renderDates();
+}
+$('other-ok').onclick=function(){
+  var n=$('other-name').value.trim().replace(/\s+/g,'');
+  if(!n){toast('請先輸入姓名');$('other-name').focus();return;}
+  choose(n,$('other-group').value);$('other-name').value='';
+};
+
+// ── 日期勾選 ─────────────────────────────────────────
+function renderDates(){
+  if(VIEW==='cal'){renderDatesCal();return;}
+  var box=$('dates');box.textContent='';
+  var months=[];DATES.forEach(function(x){if(months.indexOf(x.ym)<0)months.push(x.ym);});
+  months.forEach(function(ym){
+    var sec=el('div','month');
+    var t=el('div','month-title');t.appendChild(el('h3',null,(+ym.slice(5))+' 月'));
+    var openN=OPEN.filter(function(x){return x.ym===ym;}).length;
+    t.appendChild(el('span','hint',openN+' 天可選'));sec.appendChild(t);
+    DATES.filter(function(x){return x.ym===ym;}).forEach(function(x){
+      var row=el('div','row'+(x.off?' off':''));
+      var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
+      row.appendChild(cal);
+      var info=el('div','info');info.appendChild(el('div','t','週'+WD[x.w]+'晚上'));
+      if(x.note)info.appendChild(el('div','n',x.note));
+      if(x.off)info.appendChild(el('div','n','不排練：'+x.off));
+      row.appendChild(info);
+      if(x.off){row.appendChild(el('span','off-tag','不排練'));}
+      else{
+        var seg=el('div','seg');seg.setAttribute('role','group');seg.setAttribute('aria-label',label(x));
+        [['y','可以'],['m','可能'],['n','不行']].forEach(function(o){
+          var b=el('button',null,o[1]);b.type='button';b.dataset.v=o[0];
+          b.setAttribute('aria-pressed',answers[x.k]===o[0]);
+          b.disabled=!me;
+          b.onclick=function(){answers[x.k]=o[0];dirty=true;renderDates();};
+          seg.appendChild(b);
+        });
+        row.appendChild(seg);
+      }
+      sec.appendChild(row);
+    });
+    box.appendChild(sec);
+  });
+  updateProgress();
+}
+function answered(){return OPEN.filter(function(x){return answers[x.k];}).length;}
+// ── 月曆檢視 ─────────────────────────────────────────
+var MONTHS=[];DATES.forEach(function(x){if(MONTHS.indexOf(x.ym)<0)MONTHS.push(x.ym);});
+var BYKEY={};DATES.forEach(function(x){BYKEY[x.k]=x;});
+var CYCLE={'':'y',y:'m',m:'n',n:''},SHORT={y:'可以',m:'可能',n:'不行'};
+function calGrid(ym,cellFn){
+  var y=+ym.slice(0,4),m=+ym.slice(5);
+  var first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),days=new Date(Date.UTC(y,m,0)).getUTCDate();
+  var sec=el('div','month'),t=el('div','month-title');t.appendChild(el('h3',null,m+' 月'));sec.appendChild(t);
+  var g=el('div','calgrid'),i;
+  for(i=0;i<7;i++)g.appendChild(el('div','calhd'+((i===2||i===6)?' on':''),WD[i]));
+  for(i=0;i<first;i++)g.appendChild(el('div','cell'));
+  for(var d=1;d<=days;d++){
+    var k=ym+'-'+('0'+d).slice(-2),x=BYKEY[k],c;
+    if(!x){c=el('div','cell muted');c.appendChild(el('span','dn',d));}
+    else if(x.off){c=el('div','cell off');c.title='不排練：'+x.off;c.appendChild(el('span','dn',d));c.appendChild(el('span','st','不排'));}
+    else c=cellFn(x,d);
+    g.appendChild(c);
+  }
+  sec.appendChild(g);return {sec:sec,title:t};
+}
+function calNotes(box){
+  var list=DATES.filter(function(x){return x.note||x.off;});
+  if(!list.length)return;
+  var nl=el('div','calnotes');
+  list.forEach(function(x){var l=el('div');l.appendChild(el('b',null,label(x)+'　'));l.appendChild(document.createTextNode(x.off?('不排練：'+x.off):x.note));nl.appendChild(l);});
+  box.appendChild(nl);
+}
+function renderDatesCal(){
+  var box=$('dates');box.textContent='';
+  box.appendChild(el('p','hint','只有週二、週六可以點。點一下切換：可以 → 可能 → 不行 → 取消。紅點是有備註的日子，說明在月曆下方。'));
+  MONTHS.forEach(function(ym){
+    var r=calGrid(ym,function(x,d){
+      var v=answers[x.k]||'',b=el('button','cell'+(v?' v-'+v:''));b.type='button';b.disabled=!me;
+      b.setAttribute('aria-label',label(x)+'：'+(v?SHORT[v]:'未選'));
+      b.appendChild(el('span','dn',d));b.appendChild(el('span','st',v?SHORT[v]:'未選'));
+      if(x.note)b.appendChild(el('span','mk'));
+      b.onclick=function(){var nv=CYCLE[answers[x.k]||''];if(nv)answers[x.k]=nv;else delete answers[x.k];dirty=true;renderDates();};
+      return b;
+    });
+    r.title.appendChild(el('span','hint',OPEN.filter(function(x){return x.ym===ym;}).length+' 天可選'));
+    box.appendChild(r.sec);
+  });
+  calNotes(box);
+  updateProgress();
+}
+function updateProgress(){
+  var n=answered();
+  $('progress').textContent=me?('已選 '+n+' / '+OPEN.length+' 天'+(n<OPEN.length?'，沒選的會當成「未回覆」':'')):'先在上面點你的名字';
+  $('submit').disabled=!me||n===0||saving||!store;
+  $('submit').textContent=me&&rows[idOf(me.name)]?'更新我的答案':'送出';
+  $('all-yes').disabled=$('all-clear').disabled=!me;
+}
+$('all-yes').onclick=function(){OPEN.forEach(function(x){answers[x.k]='y';});dirty=true;renderDates();};
+$('all-clear').onclick=function(){answers={};dirty=true;renderDates();};
+$('note').addEventListener('input',function(){note=this.value;dirty=true;});
+
+$('submit').onclick=function(){
+  if(!me||!store)return;
+  saving=true;updateProgress();
+  var clean={};OPEN.forEach(function(x){if(answers[x.k])clean[x.k]=answers[x.k];});
+  var data={name:me.name,group:me.group,answers:clean,note:($('note').value||'').slice(0,300)};
+  var was=!!rows[idOf(me.name)];
+  store.save(idOf(me.name),data).then(function(){
+    dirty=false;saving=false;
+    rows[idOf(me.name)]=Object.assign({},data,{updatedAt:Date.now()});
+    toast(was?('已更新 '+me.name+' 的日期'):('已送出，謝謝 '+me.name+'！'));
+    $('chosen').textContent='✓ '+me.name+'：已儲存。之後要改日期，再點你的名字就可以修改';
+    renderNames();updateProgress();
+  },function(e){
+    saving=false;updateProgress();
+    toast('沒有送出成功，請稍後再按一次送出');
+    console.error(e);
+  });
+};
+
+// ── 統計 ─────────────────────────────────────────────
+function tally(){
+  var people=Object.keys(rows).map(function(id){return rows[id];});
+  var res={};
+  OPEN.forEach(function(x){
+    var t={y:[],m:[],n:[],g:{drama:[0,0],door:[0,0],crew:[0,0]}};
+    people.forEach(function(p){
+      var v=p.answers&&p.answers[x.k];var g=t.g[p.group]||t.g.crew;g[1]++;
+      if(v==='y'){t.y.push(p.name);g[0]++;}else if(v==='m')t.m.push(p.name);else if(v==='n')t.n.push(p.name);
+    });
+    res[x.k]=t;
+  });
+  var picks={};
+  Object.keys(PICKS).forEach(function(ym){
+    OPEN.filter(function(x){return x.ym===ym;}).map(function(x){return x;})
+      .sort(function(a,b){var A=res[a.k],B=res[b.k];return (B.y.length-A.y.length)||(B.m.length-A.m.length)||(a.k<b.k?-1:1);})
+      .filter(function(x){return res[x.k].y.length+res[x.k].m.length>0;})
+      .slice(0,PICKS[ym]).forEach(function(x){picks[x.k]=true;});
+  });
+  return {people:people,res:res,picks:picks};
+}
+var SEL=null;
+function renderResultsCal(T,total,box){
+  if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
+  box.appendChild(el('p','hint','格子越綠表示能來的人越多，紅框是建議排練日。點日期看名單。'));
+  MONTHS.forEach(function(ym){
+    var r=calGrid(ym,function(x,d){
+      var t=T.res[x.k],ratio=total?t.y.length/total:0;
+      var b=el('button','cell r'+(T.picks[x.k]?' pick':'')+(SEL===x.k?' sel':''));b.type='button';
+      if(ratio>0){b.style.background='color-mix(in srgb, var(--yes) '+Math.round(15+ratio*75)+'%, var(--surface))';if(ratio>0.5)b.style.color='#fff';}
+      b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人，可能 '+t.m.length+' 人');
+      b.appendChild(el('span','dn',d));b.appendChild(el('span','st',t.y.length+' 人'));
+      if(t.m.length)b.appendChild(el('span','cnt','可能 '+t.m.length));
+      b.onclick=function(){SEL=x.k;renderResults();};
+      return b;
+    });
+    r.title.appendChild(el('span','hint','建議排 '+PICKS[ym]+' 次'));
+    box.appendChild(r.sec);
+  });
+  var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
+  var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
+  if(T.picks[SEL])top.appendChild(el('span','badge','建議'));
+  det.appendChild(top);
+  if(x.note)det.appendChild(el('div','hint',x.note));
+  var c=el('div','counts');
+  c.appendChild(el('span','cy','可以 '+t.y.length));c.appendChild(el('span','cm','可能 '+t.m.length));c.appendChild(el('span',null,'不行 '+t.n.length));
+  c.appendChild(el('span',null,'戲劇 '+t.g.drama[0]+'/'+t.g.drama[1]+'・門神 '+t.g.door[0]+'/'+t.g.door[1]));
+  det.appendChild(c);
+  var who=el('div','who');
+  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].join('、')));who.appendChild(l);});
+  if(!total)who.appendChild(el('div','empty','還沒有人填寫'));
+  det.appendChild(who);box.appendChild(det);
+}
+function renderResults(){
+  var T=tally(),total=T.people.length;
+  $('sum-count').textContent=total;
+  $('sum-of').textContent='名單 '+MEMBERS.length+' 人'+(total>MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length?'（含名單外）':'');
+  var pk=$('sum-picks');pk.textContent='';
+  var pks=OPEN.filter(function(x){return T.picks[x.k];});
+  if(!pks.length)pk.appendChild(el('span','empty','還沒有人填寫'));
+  pks.forEach(function(x){pk.appendChild(el('span','pick',label(x)+' '+T.res[x.k].y.length+' 人'));});
+
+  var box=$('results');box.textContent='';
+  if(VIEW==='cal'){renderResultsCal(T,total,box);}else{
+  var months=[];OPEN.forEach(function(x){if(months.indexOf(x.ym)<0)months.push(x.ym);});
+  months.forEach(function(ym){
+    var sec=el('div','month');
+    var t=el('div','month-title');t.appendChild(el('h3',null,(+ym.slice(5))+' 月'));
+    t.appendChild(el('span','hint','建議排 '+PICKS[ym]+' 次'));sec.appendChild(t);
+    OPEN.filter(function(x){return x.ym===ym;}).forEach(function(x){
+      var r=T.res[x.k],row=el('div','res-row');
+      var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
+      row.appendChild(cal);
+      var main=el('div','res-main');
+      var top=el('div','res-top');top.appendChild(el('span',null,'週'+WD[x.w]+'晚上'));
+      if(T.picks[x.k])top.appendChild(el('span','badge','建議'));
+      if(x.note)top.appendChild(el('span','hint',x.note));
+      main.appendChild(top);
+      var bar=el('div','bar');bar.setAttribute('aria-hidden','true');
+      if(total){[['y',r.y.length],['m',r.m.length],['n',r.n.length]].forEach(function(p){var s=el('span',p[0]);s.style.width=(p[1]/total*100)+'%';bar.appendChild(s);});}
+      main.appendChild(bar);
+      var c=el('div','counts');
+      c.appendChild(el('span','cy','可以 '+r.y.length));c.appendChild(el('span','cm','可能 '+r.m.length));c.appendChild(el('span',null,'不行 '+r.n.length));
+      var none=total-r.y.length-r.m.length-r.n.length;if(none>0)c.appendChild(el('span',null,'未回覆 '+none));
+      c.appendChild(el('span',null,'戲劇 '+r.g.drama[0]+'/'+r.g.drama[1]+'・門神 '+r.g.door[0]+'/'+r.g.door[1]));
+      main.appendChild(c);
+      if(total){
+        var det=el('details');det.appendChild(el('summary',null,'名單'));
+        var who=el('div','who');
+        [['可以',r.y],['可能',r.m],['不行',r.n]].forEach(function(p){if(!p[1].length)return;var line=el('div');line.appendChild(el('b',null,p[0]+'：'));line.appendChild(document.createTextNode(p[1].join('、')));who.appendChild(line);});
+        det.appendChild(who);main.appendChild(det);
+      }
+      row.appendChild(main);sec.appendChild(row);
+    });
+    box.appendChild(sec);
+  });
+  }
+
+  var fl=$('filled');fl.textContent='';
+  if(!T.people.length)fl.appendChild(el('span','empty','還沒有人填寫'));
+  T.people.slice().sort(function(a,b){return (b.updatedAt||0)-(a.updatedAt||0);}).forEach(function(p){
+    var b=el('button','name done');b.type='button';
+    b.appendChild(document.createTextNode(p.name));
+    if(p.updatedAt)b.appendChild(el('small',null,fmt(p.updatedAt)));
+    b.appendChild(el('span','tag','修改'));
+    b.onclick=function(){
+      show('fill');try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+      choose(p.name,p.group);
+      $('chosen').scrollIntoView({behavior:'smooth',block:'center'});
+    };
+    fl.appendChild(b);
+  });
+  var pend=$('pending');pend.textContent='';
+  var left=MEMBERS.filter(function(m){return !rows[idOf(m[0])];});
+  if(!left.length)pend.appendChild(el('span',null,'名單上的人都填好了'));
+  left.forEach(function(m){pend.appendChild(el('span',null,m[0]));});
+  var nb=$('notes');nb.textContent='';
+  var notes=T.people.filter(function(p){return p.note;});
+  if(notes.length){
+    var d=el('details');d.appendChild(el('summary',null,'大家的備註（'+notes.length+'）'));
+    var w=el('div','who');notes.forEach(function(p){var l=el('div');l.appendChild(el('b',null,p.name+'：'));l.appendChild(document.createTextNode(p.note));w.appendChild(l);});
+    d.appendChild(w);nb.appendChild(d);
+  }
+}
+
+// ── 資料庫：GitHub Pages 用 Firebase；在 Claude 裡用 Artifact 資料庫 ──
+function onRows(list){
+  rows={};list.forEach(function(r){if(r&&r.name)rows[idOf(r.name)]=r;});
+  renderNames();updateProgress();
+  if(!$('view-result').hidden)renderResults();
+}
+function useArtifact(){
+  return window.claude.use('db').then(function(db){
+    if(!db)throw new Error('db unavailable');
+    var col=db.collection('avail');
+    col.onSnapshot(function(s){onRows(s.docs.map(function(d){return d.data();}));},function(e){setStatus('資料庫連線中斷，請重新整理頁面',true);});
+    return {save:function(id,data){return col.doc(id).set(Object.assign({},data,{updatedAt:Date.now()}));}};
+  });
+}
+function useFirebase(){
+  var B='https://www.gstatic.com/firebasejs/12.19.0/';
+  var CFG={apiKey:'AIzaSyAKli7_yGRWuB2tPlEcMLcW3tZOg4EpZME',authDomain:'shiguang-script-2027.firebaseapp.com',projectId:'shiguang-script-2027',storageBucket:'shiguang-script-2027.firebasestorage.app',messagingSenderId:'1073506177449',appId:'1:1073506177449:web:5945cfa8ded24d74e934b8'};
+  var imp=new Function('u','return import(u)');
+  return Promise.all([imp(B+'firebase-app.js'),imp(B+'firebase-firestore.js')]).then(function(m){
+    var A=m[0],F=m[1],db=F.getFirestore(A.initializeApp(CFG,'rehearsal'));
+    var col=F.collection(db,'rehearsal');
+    F.onSnapshot(col,function(s){onRows(s.docs.map(function(d){var x=d.data();if(x.updatedAt&&x.updatedAt.toMillis)x.updatedAt=x.updatedAt.toMillis();return x;}));},function(e){setStatus('資料庫讀取失敗（'+(e.code||'錯誤')+'），請稍後重新整理',true);});
+    return {save:function(id,data){return F.setDoc(F.doc(col,id),Object.assign({},data,{updatedAt:F.serverTimestamp()}));}};
+  });
+}
+var h=location.hostname;
+var onSite=/github\.io$/.test(h)||h==='localhost'||h==='127.0.0.1'||location.protocol==='file:';
+var hasClaude=!!(window.claude&&typeof window.claude.use==='function');
+(hasClaude&&!onSite?useArtifact():useFirebase()).then(function(s){
+  store=s;setStatus('已連線：大家填的資料會即時同步');updateProgress();
+},function(e){
+  console.error(e);setStatus('目前連不上資料庫，可以先看日期，但還無法送出',true);
+});
+
+renderTogs();renderNames();renderDates();
+if(location.hash==='#result')show('result');
+})();
+</script>
+
+</body>
+</html>
