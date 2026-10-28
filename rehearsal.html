@@ -597,6 +597,7 @@ $('submit').onclick=function(){
   store.save(idOf(me.name),data).then(function(){
     dirty=false;saving=false;
     rows[idOf(me.name)]=Object.assign({},data,{updatedAt:Date.now()});
+    notify(data,was);
     toast(was?('已更新 '+me.name+' 的日期'):('已送出，謝謝 '+me.name+'！'));
     $('chosen').textContent='✓ '+me.name+'：已儲存。之後要改日期，再點你的名字就可以修改';
     renderNames();updateProgress();
@@ -789,8 +790,21 @@ function useFirebase(){
     var A=m[0],F=m[1],db=F.getFirestore(A.initializeApp(CFG,'rehearsal'));
     var col=F.collection(db,'rehearsal');
     F.onSnapshot(col,function(s){onRows(s.docs.map(function(d){var x=d.data();if(x.updatedAt&&x.updatedAt.toMillis)x.updatedAt=x.updatedAt.toMillis();return x;}));},function(e){setStatus('資料庫讀取失敗（'+(e.code||'錯誤')+'），請稍後重新整理',true);});
-    return {save:function(id,data){return F.setDoc(F.doc(col,id),Object.assign({},data,{updatedAt:F.serverTimestamp()}));}};
+    return {kind:'fb',save:function(id,data){return F.setDoc(F.doc(col,id),Object.assign({},data,{updatedAt:F.serverTimestamp()}));}};
   });
+}
+// ── 送出後通知 Harry 的手機（ntfy.sh 推播，只在正式網站發送）──
+var NTFY_TOPIC='shiguang-rehearsal-105kub77nfsi';
+function notify(data,was){
+  if(!store||store.kind!=='fb')return;
+  try{
+    var c={y:0,m:0,n:0};Object.keys(data.answers).forEach(function(k){c[data.answers[k]]++;});
+    var msg=(GROUPS[data.group]||'')+'｜可以 '+c.y+' 天・可能 '+c.m+' 天・不行 '+c.n+' 天'+(data.note?'\n備註：'+data.note.slice(0,80):'');
+    fetch('https://ntfy.sh/',{method:'POST',body:JSON.stringify({
+      topic:NTFY_TOPIC,title:data.name+(was?' 更新了排練時間':' 填好了排練時間'),
+      message:msg,tags:['calendar'],click:location.origin+location.pathname+'#result'
+    })}).catch(function(){});
+  }catch(e){}
 }
 var h=location.hostname;
 var onSite=/github\.io$/.test(h)||h==='localhost'||h==='127.0.0.1'||location.protocol==='file:';
