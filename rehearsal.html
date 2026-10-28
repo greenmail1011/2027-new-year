@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="2027 教定區新春團拜">
 <meta property="og:title" content="排練時間調查｜2027 新春團拜">
-<meta property="og:description" content="請在 10/30 前勾選 11 月～1 月週二、週六晚上可以來排練的日期。">
+<meta property="og:description" content="請在 10/30 前勾選 11 月～1 月週二、週六晚上（6:30～9:30）可以來排練的日期。">
 <meta property="og:image" content="https://greenmail1011.github.io/2027-new-year/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
@@ -178,7 +178,7 @@ button.cell .st{color:var(--muted)}
     <p class="lead">請在 <b>10/30（五）</b>前，勾選 11 月到 1 月中，你哪幾個週二、週六晚上可以來排練。我們會挑出最多人能到的日子，每個月排 2～3 次。</p>
     <p class="notice">只要時間可以，<b>請務必都選上「可以」</b>。我們會挑人數集合最多的日子安排練習，選得越多，越容易排到大家都能來的時間。</p>
     <div class="facts">
-      <span class="fact">時段：<b>週二、週六晚上</b>（實際時間以群組通知為準）</span>
+      <span class="fact">時段：<b>週二、週六晚上 6:30～9:30</b></span>
       <span class="fact">一次填完，之後可回來修改</span>
     </div>
     <div class="status" id="status">正在連線資料庫…</div>
@@ -271,7 +271,7 @@ var OFF={ // 會議中說不能排的日子
   '2026-12-08':'人才班','2027-01-02':'不排練','2027-01-16':'經理有會議'
 };
 var NOTE={
-  '2026-11-14':'會議暫定的第一次排練（原訂下午 2 點）',
+  '2026-11-14':'會議暫定的第一次排練',
   '2026-11-17':'原場地當天有高階禪修班，若選中需另找場地',
   '2026-12-22':'冬至',
   '2027-01-09':'年前最後一次壇辦，晚上排練＋年末聚餐'
@@ -393,7 +393,7 @@ function renderDates(){
       var row=el('div','row'+(x.off?' off':''));
       var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
       row.appendChild(cal);
-      var info=el('div','info');info.appendChild(el('div','t','週'+WD[x.w]+'晚上'));
+      var info=el('div','info');info.appendChild(el('div','t','週'+WD[x.w]+'晚上 6:30～9:30'));
       if(x.note)info.appendChild(el('div','n',x.note));
       if(x.off)info.appendChild(el('div','n','不排練：'+x.off));
       row.appendChild(info);
