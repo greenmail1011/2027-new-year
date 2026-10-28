@@ -191,6 +191,7 @@ button.cell .st{color:var(--muted)}
 .slot-top{display:flex;align-items:center;gap:6px;min-width:0}
 .slot-d{font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.1;font-variant-numeric:tabular-nums}
 .slot-w{font-size:12px;color:var(--muted)}
+.slot-t{font-size:12px;color:var(--muted);margin-top:-3px}
 .slot-note{font-size:12px;color:var(--accent);line-height:1.45;margin:2px 0 6px}
 .slot-n{font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .slot .seg{display:flex;width:100%}
@@ -544,11 +545,12 @@ function weekList(){
   return Object.keys(map).sort().map(function(k){return map[k];});
 }
 function wkRange(m){var e=new Date(m.getTime()+6*864e5);return (m.getUTCMonth()+1)+'/'+m.getUTCDate()+'–'+(e.getUTCMonth()!==m.getUTCMonth()?(e.getUTCMonth()+1)+'/':'')+e.getUTCDate();}
+function wtime(x){return x.w===2?'週二 晚上 7:30～9:30':'週六 晚上 6:30～9:30';}
 function slotOf(x,fn){
   if(!x)return el('div','slot none');
   if(x.off){
     if(!SHOWOFF){var e=el('div','slot empty','不排練');e.title=x.off;return e;}
-    var o=el('div','slot off'),t=el('div','slot-top');t.appendChild(el('span','slot-d',x.m+'/'+x.day));o.appendChild(t);o.appendChild(el('span','slot-w','不排：'+x.off));return o;
+    var o=el('div','slot off'),t=el('div','slot-top');t.appendChild(el('span','slot-d',x.m+'/'+x.day));o.appendChild(t);o.appendChild(el('div','slot-t',wtime(x)));o.appendChild(el('span','slot-w','不排：'+x.off));return o;
   }
   return fn(x);
 }
@@ -579,6 +581,7 @@ function renderDatesWeek(){
     t.appendChild(el('span','slot-d',x.m+'/'+x.day));
     if(SHORT_NOTE[x.k]&&!FULL_NOTE[x.k]){var n=el('span','slot-n',SHORT_NOTE[x.k]);n.title=x.note;t.appendChild(n);}
     s.appendChild(t);
+    s.appendChild(el('div','slot-t',wtime(x)));
     if(FULL_NOTE[x.k])s.appendChild(el('div','slot-note',x.note));
     var seg=el('div','seg');seg.setAttribute('role','group');seg.setAttribute('aria-label',label(x));
     [['y','可以'],['m','可能'],['n','不行']].forEach(function(o){
@@ -668,6 +671,7 @@ function renderResultsWeek(T,total,box){
     var top=el('div','slot-top');top.appendChild(el('span','slot-d',x.m+'/'+x.day));
     if(T.picks[x.k])top.appendChild(el('span','badge','建議'));
     b.appendChild(top);
+    b.appendChild(el('div','slot-t',wtime(x)));
     if(FULL_NOTE[x.k])b.appendChild(el('div','slot-note',x.note));
     b.appendChild(el('div','cnt-big',t.y.length+' 人可以'));
     var bar=el('div','bar');bar.setAttribute('aria-hidden','true');
