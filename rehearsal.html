@@ -191,6 +191,7 @@ button.cell .st{color:var(--muted)}
 .slot-top{display:flex;align-items:center;gap:6px;min-width:0}
 .slot-d{font-family:var(--serif);font-weight:700;font-size:19px;line-height:1.1;font-variant-numeric:tabular-nums}
 .slot-w{font-size:12px;color:var(--muted)}
+.slot-note{font-size:12px;color:var(--accent);line-height:1.45;margin:2px 0 6px}
 .slot-n{font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:4px;padding:1px 6px;margin-left:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .slot .seg{display:flex;width:100%}
 .slot .seg button{flex:1;min-width:0;padding:6px 0;font-size:13px}
@@ -531,7 +532,8 @@ function renderDatesCal(){
 // ── 週表檢視 ─────────────────────────────────────────
 var SHOWDAY=parse('2027-02-06');
 var SHORT_NOTE={'2026-11-14':'第一次排練','2026-11-17':'需另找場地','2026-12-22':'冬至','2027-01-09':'年末聚餐'};
-var TAG_ENOUGH={'2026-11-14':1,'2026-12-22':1}; // 標籤已足夠，週表下方不再重複
+var FULL_NOTE={'2026-11-17':1}; // 完整備註直接寫在日期格子上
+var TAG_ENOUGH={'2026-11-14':1,'2026-11-17':1,'2026-12-22':1}; // 格子上已說清楚，週表下方不再重複
 function weekList(){
   var map={};
   DATES.forEach(function(x){
@@ -575,8 +577,9 @@ function renderDatesWeek(){
   weekGrid(box,function(x){
     var v=answers[x.k]||'',s=el('div','slot'+(v?' v-'+v:'')),t=el('div','slot-top');
     t.appendChild(el('span','slot-d',x.m+'/'+x.day));
-    if(SHORT_NOTE[x.k]){var n=el('span','slot-n',SHORT_NOTE[x.k]);n.title=x.note;t.appendChild(n);}
+    if(SHORT_NOTE[x.k]&&!FULL_NOTE[x.k]){var n=el('span','slot-n',SHORT_NOTE[x.k]);n.title=x.note;t.appendChild(n);}
     s.appendChild(t);
+    if(FULL_NOTE[x.k])s.appendChild(el('div','slot-note',x.note));
     var seg=el('div','seg');seg.setAttribute('role','group');seg.setAttribute('aria-label',label(x));
     [['y','可以'],['m','可能'],['n','不行']].forEach(function(o){
       var b=el('button',null,o[1]);b.type='button';b.dataset.v=o[0];
@@ -665,6 +668,7 @@ function renderResultsWeek(T,total,box){
     var top=el('div','slot-top');top.appendChild(el('span','slot-d',x.m+'/'+x.day));
     if(T.picks[x.k])top.appendChild(el('span','badge','建議'));
     b.appendChild(top);
+    if(FULL_NOTE[x.k])b.appendChild(el('div','slot-note',x.note));
     b.appendChild(el('div','cnt-big',t.y.length+' 人可以'));
     var bar=el('div','bar');bar.setAttribute('aria-hidden','true');
     if(total){[['y',t.y.length],['m',t.m.length],['n',t.n.length]].forEach(function(q){var s=el('span',q[0]);s.style.width=(q[1]/total*100)+'%';bar.appendChild(s);});}
