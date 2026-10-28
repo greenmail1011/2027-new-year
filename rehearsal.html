@@ -54,6 +54,9 @@ h3{font-size:17px}
 .notice{margin:14px 0 0;background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:6px;padding:10px 14px;font-size:15px;font-weight:500}
 .notice b{color:var(--accent)}
 .status.warn{color:var(--accent)}
+.status.ok{color:#1F7A4D}
+.status.ok::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;background:#22A05A;margin:0 7px 0 3px;vertical-align:1px;box-shadow:0 0 0 3px rgba(34,160,90,.18);animation:live 2.4s ease-in-out infinite}
+@keyframes live{50%{box-shadow:0 0 0 5px rgba(34,160,90,.06)}}
 
 .tabs{display:flex;gap:4px;margin:22px 0 18px;border-bottom:1px solid var(--line)}
 .tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:10px 14px;font:inherit;font-weight:700;color:var(--muted);cursor:pointer;margin-bottom:-1px}
@@ -387,7 +390,7 @@ function renderTogs(){
   });
 }
 function toast(t){var x=$('toast');x.textContent=t;x.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(function(){x.hidden=true;},2600);}
-function setStatus(t,warn){var s=$('status');s.textContent=t;s.className='status'+(warn?' warn':'');}
+function setStatus(t,warn,ok){var s=$('status');s.textContent=t;s.className='status'+(warn?' warn':'')+(ok?' ok':'');}
 
 // ── 分頁 ─────────────────────────────────────────────
 function show(which){
@@ -869,7 +872,7 @@ var h=location.hostname;
 var onSite=/github\.io$/.test(h)||h==='localhost'||h==='127.0.0.1'||location.protocol==='file:';
 var hasClaude=!!(window.claude&&typeof window.claude.use==='function');
 (hasClaude&&!onSite?useArtifact():useFirebase()).then(function(s){
-  store=s;setStatus('已連線：大家填的資料會即時同步');updateProgress();
+  store=s;setStatus('已連線：大家填的資料會即時同步',false,true);updateProgress();
 },function(e){
   console.error(e);setStatus('目前連不上資料庫，可以先看日期，但還無法送出',true);
 });
