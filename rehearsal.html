@@ -266,11 +266,10 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
 
     <section class="step">
       <div class="step-head"><span class="step-no">二</span><h2>哪幾天晚上可以來？</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
-      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。會議中已決定不排練的日子預設隱藏，可按「顯示不排練的日子」查看原因。</p>
+      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。灰色格子是會議中已決定不排練的日子，不用選。</p>
       <div class="bulk">
         <button class="btn" type="button" id="all-yes">全部先設成「可以」</button>
         <button class="btn" type="button" id="all-clear">清除重選</button>
-        <button class="btn" type="button" id="toggle-off" aria-pressed="false">顯示不排練的日子</button>
       </div>
       <div id="dates"></div>
     </section>
@@ -326,7 +325,7 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
 // ── 設定：依第 4 次會議（2026/10/20）──────────────────────────
 var START='2026-11-14', END='2027-01-30';
 var OFF={ // 會議中說不能排的日子
-  '2026-11-21':'已有其他活動','2026-11-24':'人才班','2026-12-05':'已有其他活動',
+  '2026-11-21':'秋聚活動','2026-11-24':'人才班','2026-12-05':'堂慶活動',
   '2026-12-08':'人才班','2027-01-02':'不排練','2027-01-16':'經理有會議'
 };
 var NOTE={
@@ -368,8 +367,7 @@ var $=function(id){return document.getElementById(id);};
 function fmt(t){var d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
 var VIEW='list';try{VIEW=localStorage.getItem('rh-view')==='cal'?'cal':'list';}catch(e){}
-var SHOWOFF=false;try{SHOWOFF=localStorage.getItem('rh-off')==='1';}catch(e){}
-function renderOffBtn(){var b=$('toggle-off'),n=DATES.filter(function(x){return x.off;}).length;b.setAttribute('aria-pressed',SHOWOFF);b.textContent=SHOWOFF?('隱藏不排練的日子'):('顯示不排練的日子（'+n+' 天）');}
+var SHOWOFF=true; // 不排練的日子一律顯示（10/29 Harry 決定）
 function renderTogs(){
   document.querySelectorAll('[data-tog]').forEach(function(t){
     t.textContent='';
@@ -600,7 +598,6 @@ function updateProgress(){
 }
 $('all-yes').onclick=function(){OPEN.forEach(function(x){answers[x.k]='y';});dirty=true;renderDates();};
 $('all-clear').onclick=function(){answers={};dirty=true;renderDates();};
-$('toggle-off').onclick=function(){SHOWOFF=!SHOWOFF;try{localStorage.setItem('rh-off',SHOWOFF?'1':'0');}catch(e){}renderOffBtn();renderDates();if(!$('view-result').hidden)renderResults();};
 $('note').addEventListener('input',function(){note=this.value;dirty=true;});
 
 $('submit').onclick=function(){
@@ -839,7 +836,7 @@ var hasClaude=!!(window.claude&&typeof window.claude.use==='function');
   console.error(e);setStatus('目前連不上資料庫，可以先看日期，但還無法送出',true);
 });
 
-renderTogs();renderOffBtn();renderNames();renderDates();
+renderTogs();renderNames();renderDates();
 if(location.hash==='#result')show('result');
 })();
 </script>
