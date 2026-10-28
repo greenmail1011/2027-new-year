@@ -3,14 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="2027 教定區新春團拜：勾選 11 月～1 月週二、週六晚上可以來排練的日期。">
+<meta name="description" content="2027 教定區新春團拜《老壇主的時光廚房》排練時間調查：請在 10/30 前勾選 11 月～1 月可以來排練的日期。">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="2027 教定區新春團拜">
+<meta property="og:url" content="https://greenmail1011.github.io/2027-new-year/rehearsal.html">
 <meta property="og:title" content="排練時間調查｜2027 新春團拜">
-<meta property="og:description" content="請在 10/30 前勾選 11 月～1 月週二、週六晚上（6:30～9:30）可以來排練的日期。">
-<meta property="og:image" content="https://greenmail1011.github.io/2027-new-year/og-image.jpg">
+<meta property="og:description" content="請在 10/30（五）前勾選可以來排練的日期：週二晚上 7:30～9:30、週六晚上 6:30～9:30。">
+<meta property="og:image" content="https://greenmail1011.github.io/2027-new-year/rehearsal-og.jpg">
+<meta property="og:image:secure_url" content="https://greenmail1011.github.io/2027-new-year/rehearsal-og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="排練時間調查｜2027 教定區新春團拜">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="排練時間調查｜2027 新春團拜">
+<meta name="twitter:description" content="請在 10/30（五）前勾選可以來排練的日期：週二晚上 7:30～9:30、週六晚上 6:30～9:30。">
+<meta name="twitter:image" content="https://greenmail1011.github.io/2027-new-year/rehearsal-og.jpg">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>新春團拜排練調查</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -59,6 +68,8 @@ section.step{background:var(--surface);border:1px solid var(--line);border-radiu
 .names{display:flex;flex-wrap:wrap;gap:8px}
 .name{appearance:none;font:inherit;font-size:15px;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
 .name small{color:var(--muted);font-size:12px}
+.name-select{font:inherit;font-size:16px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%;max-width:440px}
+.name-select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .name.done{border-color:var(--yes);background:var(--yes-soft)}
 .name .tag{font-size:12px;color:var(--yes);font-weight:700}
 .name[aria-pressed="true"] .tag{color:var(--accent-ink)}
@@ -178,7 +189,7 @@ button.cell .st{color:var(--muted)}
     <p class="lead">請在 <b>10/30（五）</b>前，勾選 11 月到 1 月中，你哪幾個週二、週六晚上可以來排練。我們會挑出最多人能到的日子，每個月排 2～3 次。</p>
     <p class="notice">只要時間可以，<b>請務必都選上「可以」</b>。我們會挑人數集合最多的日子安排練習，選得越多，越容易排到大家都能來的時間。</p>
     <div class="facts">
-      <span class="fact">時段：<b>週二、週六晚上 6:30～9:30</b></span>
+      <span class="fact">時段：<b>週二晚上 7:30～9:30</b>、<b>週六晚上 6:30～9:30</b></span>
       <span class="fact">一次填完，之後可回來修改</span>
     </div>
     <div class="status" id="status">正在連線資料庫…</div>
@@ -192,7 +203,7 @@ button.cell .st{color:var(--muted)}
   <main id="view-fill" role="tabpanel" aria-labelledby="tab-fill">
     <section class="step">
       <div class="step-head"><span class="step-no">一</span><h2>你是誰？</h2></div>
-      <p class="hint">點自己的名字。標「✓ 已填」的人已經填過，點了會載入上次的答案，可以直接修改日期。家長可以幫小朋友填。</p>
+      <p class="hint">從下拉選單選自己的名字。後面有「✓ 已填」的人已經填過，選了會載入上次的答案，可以直接修改日期。家長可以幫小朋友填。</p>
       <div class="progress" id="fill-count"></div>
       <div id="names"></div>
       <div class="other">
@@ -337,33 +348,37 @@ window.addEventListener('hashchange',function(){show(location.hash==='#result'?'
 
 // ── 名單 ─────────────────────────────────────────────
 function renderNames(){
-  var box=$('names');box.textContent='';
-  Object.keys(GROUPS).forEach(function(g){
-    var list=MEMBERS.filter(function(m){return m[1]===g;});
-    // 名單外但已填寫的人也顯示在對應組別
-    Object.keys(rows).forEach(function(id){var r=rows[id];if(r.group===g&&!MEMBERS.some(function(m){return m[0]===r.name;}))list.push([r.name,g,'']);});
-    if(!list.length)return;
-    var wrap=el('div');wrap.appendChild(el('div','group-label',GROUPS[g]));
-    var names=el('div','names');
-    list.forEach(function(m){
-      var b=el('button','name');b.type='button';
-      var done=!!rows[idOf(m[0])];
-      if(done)b.classList.add('done');
-      b.appendChild(document.createTextNode(m[0]));
-      if(m[2])b.appendChild(el('small',null,m[2]));
-      if(done)b.appendChild(el('span','tag','✓ 已填'));
-      b.setAttribute('aria-pressed',!!(me&&me.name===m[0]));
-      b.onclick=function(){choose(m[0],m[1]);};
-      names.appendChild(b);
-    });
-    wrap.appendChild(names);box.appendChild(wrap);
+  var box=$('names');
+  // 下拉選單：依組別分組，已填寫的人後面標「✓ 已填」
+  var groups=Object.keys(GROUPS).map(function(g){
+    var list=MEMBERS.filter(function(m){return m[1]===g;}).slice();
+    Object.keys(rows).forEach(function(id){var r=rows[id];if(r.group===g&&!list.some(function(m){return m[0]===r.name;}))list.push([r.name,g,'']);});
+    if(me&&me.group===g&&!list.some(function(m){return m[0]===me.name;}))list.push([me.name,g,'']);
+    return [g,list];
   });
-  box.style.display='grid';box.style.gap='12px';
+  var sig=JSON.stringify(groups.map(function(x){return x[1].map(function(m){return m[0]+(rows[idOf(m[0])]?'*':'');});}))+'|'+(me?me.name:'');
+  if(box.dataset.sig!==sig){
+    box.dataset.sig=sig;box.textContent='';
+    var sel=el('select','name-select');sel.id='name-select';sel.setAttribute('aria-label','選擇你的名字');
+    var ph=el('option',null,'— 請選擇你的名字 —');ph.value='';sel.appendChild(ph);
+    groups.forEach(function(x){
+      if(!x[1].length)return;
+      var og=document.createElement('optgroup');og.label=GROUPS[x[0]];
+      x[1].forEach(function(m){
+        var o=el('option',null,m[0]+(m[2]?'（'+m[2]+'）':'')+(rows[idOf(m[0])]?'　✓ 已填':''));
+        o.value=m[0];o.dataset.g=x[0];og.appendChild(o);
+      });
+      sel.appendChild(og);
+    });
+    sel.onchange=function(){var o=sel.options[sel.selectedIndex];if(o&&o.value)choose(o.value,o.dataset.g);};
+    box.appendChild(sel);
+  }
+  $('name-select').value=me?me.name:'';
   var n=MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length;
   $('fill-count').textContent='名單已填 '+n+' / '+MEMBERS.length+' 人';
 }
 function choose(name,group){
-  if(dirty&&me&&me.name!==name&&!choose._warned){choose._warned=true;toast('你剛才的勾選還沒送出，再點一次名字就會切換');return;}
+  if(dirty&&me&&me.name!==name&&!choose._warned){choose._warned=true;toast('你剛才的勾選還沒送出，再選一次就會切換');renderNames();return;}
   choose._warned=false;
   me={name:name,group:group};
   var r=rows[idOf(name)];
@@ -393,7 +408,7 @@ function renderDates(){
       var row=el('div','row'+(x.off?' off':''));
       var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
       row.appendChild(cal);
-      var info=el('div','info');info.appendChild(el('div','t','週'+WD[x.w]+'晚上 6:30～9:30'));
+      var info=el('div','info');info.appendChild(el('div','t','週'+WD[x.w]+'晚上 '+(x.w===2?'7:30':'6:30')+'～9:30'));
       if(x.note)info.appendChild(el('div','n',x.note));
       if(x.off)info.appendChild(el('div','n','不排練：'+x.off));
       row.appendChild(info);
@@ -464,7 +479,7 @@ function renderDatesCal(){
 }
 function updateProgress(){
   var n=answered();
-  $('progress').textContent=me?('已選 '+n+' / '+OPEN.length+' 天'+(n<OPEN.length?'，沒選的會當成「未回覆」':'')):'先在上面點你的名字';
+  $('progress').textContent=me?('已選 '+n+' / '+OPEN.length+' 天'+(n<OPEN.length?'，沒選的會當成「未回覆」':'')):'先在上面選你的名字';
   $('submit').disabled=!me||n===0||saving||!store;
   $('submit').textContent=me&&rows[idOf(me.name)]?'更新我的答案':'送出';
   $('all-yes').disabled=$('all-clear').disabled=!me;
