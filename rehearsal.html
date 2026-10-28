@@ -134,6 +134,12 @@ details summary{cursor:pointer;color:var(--muted)}
 .who{display:grid;gap:2px;margin-top:4px}
 .who b{font-weight:500}
 .pending{display:flex;flex-wrap:wrap;gap:6px}
+.nt-list{display:grid;gap:8px;margin-top:8px}
+.nt{border-left:3px solid var(--accent);background:var(--bg);border-radius:0 8px 8px 0;padding:8px 12px}
+.nt-who{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.nt-who b{font-weight:600}
+.nt-who small{color:var(--muted);font-size:12px}
+.nt p{margin:4px 0 0;white-space:pre-wrap;line-height:1.6;font-size:15px}
 .pending span{font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
 .fixed{display:grid;gap:6px;font-size:15px}
 .fixed div{display:flex;gap:10px}
@@ -289,6 +295,10 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
       <div id="results"></div>
     </section>
     <section class="step">
+      <div class="step-head"><h2>大家的備註</h2><span class="hint" id="notes-count"></span></div>
+      <div id="notes"></div>
+    </section>
+    <section class="step">
       <div class="step-head"><h2>已填寫</h2></div>
       <p class="hint">點名字可以回去修改那個人的日期；名字旁是最後更新時間。</p>
       <div class="names" id="filled"></div>
@@ -296,7 +306,6 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
     <section class="step">
       <div class="step-head"><h2>還沒填寫</h2></div>
       <div class="pending" id="pending"></div>
-      <div id="notes"></div>
     </section>
     <section class="step">
       <div class="step-head"><h2>已確定的日子</h2></div>
@@ -491,8 +500,12 @@ function calGrid(ym,cellFn){
   }
   sec.appendChild(g);return {sec:sec,title:t};
 }
-function calNotes(box){
-  var list=DATES.filter(function(x){return (x.note&&!x.off)||(x.off&&SHOWOFF);});
+function calNotes(box,week){
+  // 週表：不排練原因、短標籤已說完整的備註都已顯示在格子裡，只補充標籤沒說到的細節
+  var list=DATES.filter(function(x){
+    if(week)return x.note&&!x.off&&!TAG_ENOUGH[x.k];
+    return (x.note&&!x.off)||(x.off&&SHOWOFF);
+  });
   if(!list.length)return;
   var nl=el('div','calnotes');
   list.forEach(function(x){var l=el('div');l.appendChild(el('b',null,label(x)+'　'));l.appendChild(document.createTextNode(x.off?('不排練：'+x.off):x.note));nl.appendChild(l);});
@@ -519,6 +532,7 @@ function renderDatesCal(){
 // ── 週表檢視 ─────────────────────────────────────────
 var SHOWDAY=parse('2027-02-06');
 var SHORT_NOTE={'2026-11-14':'第一次排練','2026-11-17':'需另找場地','2026-12-22':'冬至','2027-01-09':'年末聚餐'};
+var TAG_ENOUGH={'2026-11-14':1,'2026-12-22':1}; // 標籤已足夠，週表下方不再重複
 function weekList(){
   var map={};
   DATES.forEach(function(x){
@@ -573,7 +587,7 @@ function renderDatesWeek(){
     });
     s.appendChild(seg);return s;
   },function(ym){return OPEN.filter(function(x){return x.ym===ym;}).length+' 天可選';});
-  calNotes(box);
+  calNotes(box,true);
   updateProgress();
 }
 function updateProgress(){
@@ -759,11 +773,20 @@ function renderResults(){
   if(!left.length)pend.appendChild(el('span',null,'名單上的人都填好了'));
   left.forEach(function(m){pend.appendChild(el('span',null,m[0]));});
   var nb=$('notes');nb.textContent='';
-  var notes=T.people.filter(function(p){return p.note;});
-  if(notes.length){
-    var d=el('details');d.appendChild(el('summary',null,'大家的備註（'+notes.length+'）'));
-    var w=el('div','who');notes.forEach(function(p){var l=el('div');l.appendChild(el('b',null,p.name+'：'));l.appendChild(document.createTextNode(p.note));w.appendChild(l);});
-    d.appendChild(w);nb.appendChild(d);
+  var notes=T.people.filter(function(p){return p.note&&p.note.trim();})
+    .sort(function(a,b){return (b.updatedAt||0)-(a.updatedAt||0);});
+  $('notes-count').textContent=notes.length?(notes.length+' 則，新的在上面'):'';
+  if(!notes.length)nb.appendChild(el('p','hint','目前還沒有人寫備註。'));
+  else{
+    var list=el('div','nt-list');
+    notes.forEach(function(p){
+      var m=MEMBERS.filter(function(x){return x[0]===p.name;})[0];
+      var it=el('div','nt'),h=el('div','nt-who');
+      h.appendChild(el('b',null,p.name));
+      h.appendChild(el('small',null,(GROUPS[p.group]||'')+(m&&m[2]?'・'+m[2]:'')+(p.updatedAt?'　'+fmt(p.updatedAt):'')));
+      it.appendChild(h);it.appendChild(el('p',null,p.note.trim()));list.appendChild(it);
+    });
+    nb.appendChild(list);
   }
 }
 
