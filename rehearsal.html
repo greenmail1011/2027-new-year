@@ -103,6 +103,12 @@ section.step{background:var(--surface);border:1px solid var(--line);border-radiu
 .seg button[aria-pressed="true"][data-v="m"]{background:var(--maybe);color:#fff}
 .seg button[aria-pressed="true"][data-v="n"]{background:var(--no);color:#fff}
 .seg button:disabled{cursor:not-allowed}
+.dn-add{appearance:none;font:inherit;font-size:12px;border:0;background:none;color:var(--muted);padding:2px 0;cursor:pointer;justify-self:start;text-decoration:underline;text-underline-offset:3px}
+.dn-add:disabled{cursor:not-allowed;opacity:.5}
+.dn-in{font:inherit;font-size:14px;width:100%;min-width:0;box-sizing:border-box;border:1px solid var(--maybe);background:var(--maybe-soft);border-radius:6px;padding:5px 8px;color:var(--ink)}
+.slot-dn{font-size:12px;color:var(--maybe);font-weight:600}
+.nt-d{margin:4px 0 0;font-size:14px;line-height:1.6}
+.nt-d b{font-weight:600;color:var(--maybe);margin-right:6px}
 .bulk{display:flex;gap:8px;flex-wrap:wrap}
 .btn{appearance:none;font:inherit;font-size:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 12px;cursor:pointer}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px;padding:10px 22px}
@@ -268,7 +274,7 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
 
     <section class="step">
       <div class="step-head"><span class="step-no">二</span><h2>哪幾天晚上可以來？</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
-      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。灰色格子是會議中已決定不排練的日子，不用選。</p>
+      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。灰色格子是會議中已決定不排練的日子，不用選。某一天有特別狀況（例如那天會晚到），可以按日期下方的「＋ 這天的備註」。</p>
       <div class="bulk">
         <button class="btn" type="button" id="all-yes">全部先設成「可以」</button>
         <button class="btn" type="button" id="all-clear">清除重選</button>
@@ -425,12 +431,15 @@ function renderNames(){
   var n=MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length;
   $('fill-count').textContent='名單已填 '+n+' / '+MEMBERS.length+' 人';
 }
+var DN='#'; // 每天的備註存在 answers[日期+'#']
+var dnOpen={};
+function dnOf(p,k){return p&&p.answers&&typeof p.answers[k+DN]==='string'?p.answers[k+DN]:'';}
 function choose(name,group){
   if(dirty&&me&&me.name!==name&&!choose._warned){choose._warned=true;toast('你剛才的勾選還沒送出，再選一次就會切換');renderNames();return;}
   choose._warned=false;
   me={name:name,group:group};
   var r=rows[idOf(name)];
-  answers=r&&r.answers?Object.assign({},r.answers):{};
+  answers=r&&r.answers?Object.assign({},r.answers):{};dnOpen={};
   note=r&&r.note||'';$('note').value=note;dirty=false;
   var c=$('chosen');c.hidden=false;
   c.textContent=r?('✓ '+name+(r.updatedAt?'：已在 '+fmt(r.updatedAt)+' 填過':'：已填過')+'，下面是你上次的答案，改好後按「更新我的答案」'):('✓ '+name+'：請往下勾選日期');
@@ -590,7 +599,20 @@ function renderDatesWeek(){
       b.onclick=function(){answers[x.k]=o[0];dirty=true;renderDates();};
       seg.appendChild(b);
     });
-    s.appendChild(seg);return s;
+    s.appendChild(seg);
+    var dk=x.k+DN;
+    if(answers[dk]||dnOpen[x.k]){
+      var inp=el('input','dn-in');inp.type='text';inp.maxLength=40;inp.value=answers[dk]||'';inp.disabled=!me;
+      inp.placeholder='這天的備註，例如：會晚 30 分鐘到';inp.setAttribute('aria-label',label(x)+' 的備註');
+      inp.oninput=function(){var v=this.value.trim();if(v)answers[dk]=v;else delete answers[dk];dirty=true;};
+      s.appendChild(inp);
+      if(dnOpen[x.k]===2){dnOpen[x.k]=1;setTimeout(function(){inp.focus();},0);}
+    }else{
+      var ab=el('button','dn-add','＋ 這天的備註');ab.type='button';ab.disabled=!me;
+      ab.onclick=function(){dnOpen[x.k]=2;renderDates();};
+      s.appendChild(ab);
+    }
+    return s;
   },function(ym){return OPEN.filter(function(x){return x.ym===ym;}).length+' 天可選';});
   calNotes(box,true);
   updateProgress();
@@ -609,7 +631,7 @@ $('note').addEventListener('input',function(){note=this.value;dirty=true;});
 $('submit').onclick=function(){
   if(!me||!store)return;
   saving=true;updateProgress();
-  var clean={};OPEN.forEach(function(x){if(answers[x.k])clean[x.k]=answers[x.k];});
+  var clean={};OPEN.forEach(function(x){if(answers[x.k])clean[x.k]=answers[x.k];var d=(answers[x.k+DN]||'').trim();if(d)clean[x.k+DN]=d.slice(0,40);});
   var data={name:me.name,group:me.group,answers:clean,note:($('note').value||'').slice(0,300)};
   var was=!!rows[idOf(me.name)];
   store.save(idOf(me.name),data).then(function(){
@@ -631,9 +653,10 @@ function tally(){
   var people=Object.keys(rows).map(function(id){return rows[id];});
   var res={};
   OPEN.forEach(function(x){
-    var t={y:[],m:[],n:[],g:{drama:[0,0],door:[0,0],crew:[0,0]}};
+    var t={y:[],m:[],n:[],dn:{},nd:0,g:{drama:[0,0],door:[0,0],crew:[0,0]}};
     people.forEach(function(p){
       var v=p.answers&&p.answers[x.k];var g=t.g[p.group]||t.g.crew;g[1]++;
+      var d=dnOf(p,x.k);if(d){t.dn[p.name]=d;t.nd++;}
       if(v==='y'){t.y.push(p.name);g[0]++;}else if(v==='m')t.m.push(p.name);else if(v==='n')t.n.push(p.name);
     });
     res[x.k]=t;
@@ -659,7 +682,8 @@ function selDetail(T,total,box){
   c.appendChild(el('span',null,'戲劇 '+t.g.drama[0]+'/'+t.g.drama[1]+'・門神 '+t.g.door[0]+'/'+t.g.door[1]));
   det.appendChild(c);
   var who=el('div','who');
-  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].join('、')));who.appendChild(l);});
+  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].map(function(n){return t.dn[n]?n+'（'+t.dn[n]+'）':n;}).join('、')));who.appendChild(l);});
+  Object.keys(t.dn).filter(function(n){return t.y.indexOf(n)<0&&t.m.indexOf(n)<0&&t.n.indexOf(n)<0;}).forEach(function(n){var l=el('div');l.appendChild(el('b',null,'備註：'));l.appendChild(document.createTextNode(n+'（'+t.dn[n]+'）'));who.appendChild(l);});
   if(!total)who.appendChild(el('div','empty','還沒有人填寫'));
   det.appendChild(who);box.appendChild(det);
 }
@@ -678,6 +702,7 @@ function renderResultsWeek(T,total,box){
     if(total){[['y',t.y.length],['m',t.m.length],['n',t.n.length]].forEach(function(q){var s=el('span',q[0]);s.style.width=(q[1]/total*100)+'%';bar.appendChild(s);});}
     b.appendChild(bar);
     if(t.m.length)b.appendChild(el('span','slot-w','可能 '+t.m.length));
+    if(t.nd)b.appendChild(el('span','slot-dn','有 '+t.nd+' 則備註'));
     b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人');
     b.onclick=function(){SEL=x.k;renderResults();};
     return b;
@@ -711,7 +736,8 @@ function renderResultsCal(T,total,box){
   c.appendChild(el('span',null,'戲劇 '+t.g.drama[0]+'/'+t.g.drama[1]+'・門神 '+t.g.door[0]+'/'+t.g.door[1]));
   det.appendChild(c);
   var who=el('div','who');
-  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].join('、')));who.appendChild(l);});
+  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].map(function(n){return t.dn[n]?n+'（'+t.dn[n]+'）':n;}).join('、')));who.appendChild(l);});
+  Object.keys(t.dn).filter(function(n){return t.y.indexOf(n)<0&&t.m.indexOf(n)<0&&t.n.indexOf(n)<0;}).forEach(function(n){var l=el('div');l.appendChild(el('b',null,'備註：'));l.appendChild(document.createTextNode(n+'（'+t.dn[n]+'）'));who.appendChild(l);});
   if(!total)who.appendChild(el('div','empty','還沒有人填寫'));
   det.appendChild(who);box.appendChild(det);
 }
@@ -779,7 +805,8 @@ function renderResults(){
   if(!left.length)pend.appendChild(el('span',null,'名單上的人都填好了'));
   left.forEach(function(m){pend.appendChild(el('span',null,m[0]));});
   var nb=$('notes');nb.textContent='';
-  var notes=T.people.filter(function(p){return p.note&&p.note.trim();})
+  var dlist=function(p){return OPEN.filter(function(x){return dnOf(p,x.k);}).map(function(x){return [label(x),dnOf(p,x.k)];});};
+  var notes=T.people.filter(function(p){return (p.note&&p.note.trim())||dlist(p).length;})
     .sort(function(a,b){return (b.updatedAt||0)-(a.updatedAt||0);});
   $('notes-count').textContent=notes.length?(notes.length+' 則，新的在上面'):'';
   if(!notes.length)nb.appendChild(el('p','hint','目前還沒有人寫備註。'));
@@ -790,7 +817,10 @@ function renderResults(){
       var it=el('div','nt'),h=el('div','nt-who');
       h.appendChild(el('b',null,p.name));
       h.appendChild(el('small',null,(GROUPS[p.group]||'')+(m&&m[2]?'・'+m[2]:'')+(p.updatedAt?'　'+fmt(p.updatedAt):'')));
-      it.appendChild(h);it.appendChild(el('p',null,p.note.trim()));list.appendChild(it);
+      it.appendChild(h);
+      dlist(p).forEach(function(d){var q=el('p','nt-d');q.appendChild(el('b',null,d[0]));q.appendChild(document.createTextNode(d[1]));it.appendChild(q);});
+      if(p.note&&p.note.trim())it.appendChild(el('p',null,p.note.trim()));
+      list.appendChild(it);
     });
     nb.appendChild(list);
   }
@@ -827,8 +857,8 @@ var NTFY_TOPIC='shiguang-rehearsal-105kub77nfsi';
 function notify(data,was){
   if(!store||store.kind!=='fb')return;
   try{
-    var c={y:0,m:0,n:0};Object.keys(data.answers).forEach(function(k){c[data.answers[k]]++;});
-    var msg=(GROUPS[data.group]||'')+'｜可以 '+c.y+' 天・可能 '+c.m+' 天・不行 '+c.n+' 天'+(data.note?'\n備註：'+data.note.slice(0,80):'');
+    var c={y:0,m:0,n:0},dl=[];Object.keys(data.answers).forEach(function(k){var v=data.answers[k];if(k.slice(-1)===DN){var x=BYKEY[k.slice(0,-1)];if(x)dl.push(x.m+'/'+x.day+'：'+v);}else if(c[v]!=null)c[v]++;});
+    var msg=(GROUPS[data.group]||'')+'｜可以 '+c.y+' 天・可能 '+c.m+' 天・不行 '+c.n+' 天'+(dl.length?'\n'+dl.join('\n'):'')+(data.note?'\n備註：'+data.note.slice(0,80):'');
     fetch('https://ntfy.sh/',{method:'POST',body:JSON.stringify({
       topic:NTFY_TOPIC,title:data.name+(was?' 更新了排練時間':' 填好了排練時間'),
       message:msg,tags:['calendar'],click:location.origin+location.pathname+'#result'
