@@ -210,10 +210,11 @@ button.cell .st{color:var(--muted)}
 
     <section class="step">
       <div class="step-head"><span class="step-no">二</span><h2>哪幾天晚上可以來？</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
-      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。灰色的日子是會議中已決定不排練的。</p>
+      <p class="hint">每一天都選一下：<b>可以</b>／<b>可能</b>（還不確定）／<b>不行</b>。時間可以的日子請務必都選「可以」，不要只挑幾天。會議中已決定不排練的日子預設隱藏，可按「顯示不排練的日子」查看原因。</p>
       <div class="bulk">
         <button class="btn" type="button" id="all-yes">全部先設成「可以」</button>
         <button class="btn" type="button" id="all-clear">清除重選</button>
+        <button class="btn" type="button" id="toggle-off" aria-pressed="false">顯示不排練的日子</button>
       </div>
       <div id="dates"></div>
     </section>
@@ -308,6 +309,8 @@ var $=function(id){return document.getElementById(id);};
 function fmt(t){var d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
 var VIEW='list';try{VIEW=localStorage.getItem('rh-view')==='cal'?'cal':'list';}catch(e){}
+var SHOWOFF=false;try{SHOWOFF=localStorage.getItem('rh-off')==='1';}catch(e){}
+function renderOffBtn(){var b=$('toggle-off'),n=DATES.filter(function(x){return x.off;}).length;b.setAttribute('aria-pressed',SHOWOFF);b.textContent=SHOWOFF?('隱藏不排練的日子'):('顯示不排練的日子（'+n+' 天）');}
 function renderTogs(){
   document.querySelectorAll('[data-tog]').forEach(function(t){
     t.textContent='';
@@ -386,7 +389,7 @@ function renderDates(){
     var t=el('div','month-title');t.appendChild(el('h3',null,(+ym.slice(5))+' 月'));
     var openN=OPEN.filter(function(x){return x.ym===ym;}).length;
     t.appendChild(el('span','hint',openN+' 天可選'));sec.appendChild(t);
-    DATES.filter(function(x){return x.ym===ym;}).forEach(function(x){
+    DATES.filter(function(x){return x.ym===ym&&(SHOWOFF||!x.off);}).forEach(function(x){
       var row=el('div','row'+(x.off?' off':''));
       var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
       row.appendChild(cal);
@@ -427,6 +430,7 @@ function calGrid(ym,cellFn){
   for(var d=1;d<=days;d++){
     var k=ym+'-'+('0'+d).slice(-2),x=BYKEY[k],c;
     if(!x){c=el('div','cell muted');c.appendChild(el('span','dn',d));}
+    else if(x.off&&!SHOWOFF){c=el('div','cell muted');c.appendChild(el('span','dn',d));}
     else if(x.off){c=el('div','cell off');c.title='不排練：'+x.off;c.appendChild(el('span','dn',d));c.appendChild(el('span','st','不排'));}
     else c=cellFn(x,d);
     g.appendChild(c);
@@ -434,7 +438,7 @@ function calGrid(ym,cellFn){
   sec.appendChild(g);return {sec:sec,title:t};
 }
 function calNotes(box){
-  var list=DATES.filter(function(x){return x.note||x.off;});
+  var list=DATES.filter(function(x){return (x.note&&!x.off)||(x.off&&SHOWOFF);});
   if(!list.length)return;
   var nl=el('div','calnotes');
   list.forEach(function(x){var l=el('div');l.appendChild(el('b',null,label(x)+'　'));l.appendChild(document.createTextNode(x.off?('不排練：'+x.off):x.note));nl.appendChild(l);});
@@ -467,6 +471,7 @@ function updateProgress(){
 }
 $('all-yes').onclick=function(){OPEN.forEach(function(x){answers[x.k]='y';});dirty=true;renderDates();};
 $('all-clear').onclick=function(){answers={};dirty=true;renderDates();};
+$('toggle-off').onclick=function(){SHOWOFF=!SHOWOFF;try{localStorage.setItem('rh-off',SHOWOFF?'1':'0');}catch(e){}renderOffBtn();renderDates();if(!$('view-result').hidden)renderResults();};
 $('note').addEventListener('input',function(){note=this.value;dirty=true;});
 
 $('submit').onclick=function(){
@@ -647,7 +652,7 @@ var hasClaude=!!(window.claude&&typeof window.claude.use==='function');
   console.error(e);setStatus('目前連不上資料庫，可以先看日期，但還無法送出',true);
 });
 
-renderTogs();renderNames();renderDates();
+renderTogs();renderOffBtn();renderNames();renderDates();
 if(location.hash==='#result')show('result');
 })();
 </script>
