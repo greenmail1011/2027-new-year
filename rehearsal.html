@@ -634,7 +634,8 @@ function useArtifact(){
 }
 function useFirebase(){
   var B='https://www.gstatic.com/firebasejs/12.19.0/';
-  var CFG={apiKey:'AIzaSyAKli7_yGRWuB2tPlEcMLcW3tZOg4EpZME',authDomain:'shiguang-script-2027.firebaseapp.com',projectId:'shiguang-script-2027',storageBucket:'shiguang-script-2027.firebasestorage.app',messagingSenderId:'1073506177449',appId:'1:1073506177449:web:5945cfa8ded24d74e934b8'};
+  // Firebase 專案 rehearsal-2027（greenmail101101@gmail.com）
+  var CFG={apiKey:'AIzaSyC92LrFKqAp8nRAmNmH6uWNE1nWUNUkBBs',authDomain:'rehearsal-2027.firebaseapp.com',projectId:'rehearsal-2027',storageBucket:'rehearsal-2027.firebasestorage.app',messagingSenderId:'835466650574',appId:'1:835466650574:web:71aaa7357ef97829fc419f'};
   var imp=new Function('u','return import(u)');
   return Promise.all([imp(B+'firebase-app.js'),imp(B+'firebase-firestore.js')]).then(function(m){
     var A=m[0],F=m[1],db=F.getFirestore(A.initializeApp(CFG,'rehearsal'));
