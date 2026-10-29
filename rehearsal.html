@@ -245,7 +245,16 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
 .pm-k{font-size:13px;font-weight:700;min-width:2.6em}
 .tie-k{font-size:13px;color:var(--maybe);font-weight:700}
 .slot.sel{box-shadow:0 0 0 2px var(--focus)}
+.caldetail.inline-det{position:relative;margin:8px 0 12px;border:2px solid var(--focus);border-radius:12px;background:var(--surface);padding:12px 14px;box-shadow:0 6px 18px rgba(20,30,25,.12)}
+.inline-det::before{content:'';position:absolute;top:-9px;width:14px;height:14px;background:var(--surface);border-left:2px solid var(--focus);border-top:2px solid var(--focus);transform:translateX(-50%) rotate(45deg)}
+.inline-det.at-tue::before{left:calc(92px + (100% - 100px) / 4)}
+.inline-det.at-sat::before{left:calc(100px + (100% - 100px) * 3 / 4)}
+.inline-det.in-cal{grid-column:1/-1;margin:4px 0 8px}
+.inline-det.in-cal::before{left:calc((var(--col) + .5) * 100% / 7)}
+.det-close{margin-left:auto;appearance:none;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;padding:2px 10px;cursor:pointer}
 @media (max-width:480px){
+  .inline-det.at-tue::before{left:25%}
+  .inline-det.at-sat::before{left:75%}
   .wk-head,.wk-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
   .wk-head>span:first-child{display:none}
   .wk-meta{grid-column:1/-1;flex-direction:row;gap:8px;align-items:baseline;padding-top:4px}
@@ -555,11 +564,11 @@ function answered(){return OPEN.filter(function(x){return answers[x.k];}).length
 var MONTHS=[];DATES.forEach(function(x){if(MONTHS.indexOf(x.ym)<0)MONTHS.push(x.ym);});
 var BYKEY={};DATES.forEach(function(x){BYKEY[x.k]=x;});
 var CYCLE={'':'y',y:'m',m:'n',n:''},SHORT={y:'可以',m:'可能',n:'不行'};
-function calGrid(ym,cellFn){
+function calGrid(ym,cellFn,afterWeek){
   var y=+ym.slice(0,4),m=+ym.slice(5);
   var first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),days=new Date(Date.UTC(y,m,0)).getUTCDate();
   var sec=el('div','month'),t=el('div','month-title');t.appendChild(el('h3',null,m+' 月'));sec.appendChild(t);
-  var g=el('div','calgrid'),i;
+  var g=el('div','calgrid'),i,wkKeys=[];
   for(i=0;i<7;i++)g.appendChild(el('div','calhd'+((i===2||i===6)?' on':''),WD[i]));
   for(i=0;i<first;i++)g.appendChild(el('div','cell'));
   for(var d=1;d<=days;d++){
@@ -569,6 +578,8 @@ function calGrid(ym,cellFn){
     else if(x.off){c=el('div','cell off');c.title='不排練：'+x.off;c.appendChild(el('span','dn',d));c.appendChild(el('span','st','不排'));}
     else c=cellFn(x,d);
     g.appendChild(c);
+    wkKeys.push(k);
+    if(afterWeek&&((first+d)%7===0||d===days)){var ex=afterWeek(wkKeys);if(ex)g.appendChild(ex);wkKeys=[];}
   }
   sec.appendChild(g);return {sec:sec,title:t};
 }
@@ -625,7 +636,7 @@ function slotOf(x,fn){
   }
   return fn(x);
 }
-function weekGrid(box,slotFn,hintFn){
+function weekGrid(box,slotFn,hintFn,afterRow){
   var wrap=el('div','wk'),h=el('div','wk-head');
   h.appendChild(el('span',null,''));
   [['週二','晚上 7:30～9:30'],['週六','晚上 6:30～9:30']].forEach(function(p){var s=el('span');s.appendChild(el('b',null,p[0]));s.appendChild(document.createTextNode(p[1]));h.appendChild(s);});
@@ -639,6 +650,7 @@ function weekGrid(box,slotFn,hintFn){
     meta.appendChild(el('small',null,'距演出 '+Math.round((SHOWDAY-w.mon)/(7*864e5))+' 週'));
     r.appendChild(meta);r.appendChild(slotOf(w.tue,slotFn));r.appendChild(slotOf(w.sat,slotFn));
     wrap.appendChild(r);
+    if(afterRow){var ex=afterRow(w);if(ex)wrap.appendChild(ex);}
   });
   var g=el('div','wk-goal');
   g.appendChild(el('b',null,'2/3（三）晚上　彌勒山試裝＋總彩排'));
@@ -775,18 +787,27 @@ function whoByGroup(t,det){
     sec.appendChild(pcs);det.appendChild(sec);
   });
 }
-function selDetail(T,total,box){
-  var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
+// 點日期後的名單面板：直接展開在那一週（那一列）下面，箭頭指向點的那一格
+function detailEl(T){
+  var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail inline-det');
+  det.setAttribute('role','region');det.setAttribute('aria-label',label(x)+' 的名單');
   var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
   pickBadge(T,SEL,top);
+  var cl=el('button','det-close','收起 ✕');cl.type='button';cl.onclick=function(){SEL=null;renderResults();};
+  top.appendChild(cl);
   det.appendChild(top);
   if(x.note)det.appendChild(el('div','hint',x.note));
   whoByGroup(t,det);
-  box.appendChild(det);
+  return det;
+}
+function pickDay(k){
+  SEL=(SEL===k?null:k);renderResults();
+  var d=document.querySelector('.inline-det');
+  if(d)try{d.scrollIntoView({block:'nearest',behavior:'smooth'});}catch(e){d.scrollIntoView();}
 }
 function renderResultsWeek(T,total,box){
-  if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
-  box.appendChild(el('p','hint','每格是「可以」的人數，紅框是建議排練日，虛線框是同票、需要再決定。點日期看名單。'));
+  if(SEL&&!T.res[SEL])SEL=null;
+  box.appendChild(el('p','hint','每格是「可以」的人數，紅框是建議排練日，虛線框是同票、需要再決定。點日期，名單會在那一週下面展開；再點一次收起。'));
   weekGrid(box,function(x){
     var t=T.res[x.k],b=el('button','slot'+(T.picks[x.k]?' pick':T.ties[x.k]?' tie':'')+(SEL===x.k?' sel':''));b.type='button';
     var top=el('div','slot-top');top.appendChild(el('span','slot-d',x.m+'/'+x.day));
@@ -801,14 +822,18 @@ function renderResultsWeek(T,total,box){
     if(t.m.length)b.appendChild(el('span','slot-w','可能 '+t.m.length));
     if(t.nd)b.appendChild(el('span','slot-dn','有 '+t.nd+' 則備註'));
     b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人');
-    b.onclick=function(){SEL=x.k;renderResults();};
+    b.onclick=function(){pickDay(x.k);};
     return b;
-  },function(ym){return '建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次';});
-  selDetail(T,total,box);
+  },function(ym){return '建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次';},function(w){
+    if(!SEL)return null;
+    var side=w.tue&&w.tue.k===SEL?'tue':(w.sat&&w.sat.k===SEL?'sat':'');
+    if(!side)return null;
+    var d=detailEl(T);d.classList.add('at-'+side);return d;
+  });
 }
 function renderResultsCal(T,total,box){
-  if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
-  box.appendChild(el('p','hint','格子越綠表示能來的人越多，紅框是建議排練日，虛線框是同票、需要再決定。點日期看名單。'));
+  if(SEL&&!T.res[SEL])SEL=null;
+  box.appendChild(el('p','hint','格子越綠表示能來的人越多，紅框是建議排練日，虛線框是同票、需要再決定。點日期，名單會在那一週下面展開；再點一次收起。'));
   MONTHS.forEach(function(ym){
     var r=calGrid(ym,function(x,d){
       var t=T.res[x.k],ratio=total?t.y.length/total:0;
@@ -817,19 +842,15 @@ function renderResultsCal(T,total,box){
       b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人，可能 '+t.m.length+' 人');
       b.appendChild(el('span','dn',d));b.appendChild(el('span','st',t.y.length+' 人'));
       if(t.m.length)b.appendChild(el('span','cnt','可能 '+t.m.length));
-      b.onclick=function(){SEL=x.k;renderResults();};
+      b.onclick=function(){pickDay(x.k);};
       return b;
+    },function(keys){
+      if(!SEL||keys.indexOf(SEL)<0)return null;
+      var d=detailEl(T);d.classList.add('in-cal');d.style.setProperty('--col',BYKEY[SEL].w);return d;
     });
     r.title.appendChild(el('span','hint','建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次'));
     box.appendChild(r.sec);
   });
-  var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
-  var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
-  pickBadge(T,SEL,top);
-  det.appendChild(top);
-  if(x.note)det.appendChild(el('div','hint',x.note));
-  whoByGroup(t,det);
-  box.appendChild(det);
 }
 function renderResults(){
   var T=tally(),total=T.people.length;
