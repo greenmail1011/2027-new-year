@@ -219,6 +219,12 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
 .slot .cnt-big{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
 .slot .badge{margin-left:auto}
 .slot.pick{border:2px solid var(--accent)}
+.slot.tie,.cell.tie{border:2px dashed var(--maybe)}
+.badge.tie{background:var(--maybe);color:#fff}
+.pick.tie{background:var(--maybe-soft);color:var(--maybe)}
+.pm-line{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pm-k{font-size:13px;font-weight:700;min-width:2.6em}
+.tie-k{font-size:13px;color:var(--maybe);font-weight:700}
 .slot.sel{box-shadow:0 0 0 2px var(--focus)}
 @media (max-width:480px){
   .wk-head,.wk-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
@@ -242,7 +248,7 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
   <header>
     <img class="banner" src="rehearsal-banner.webp" width="1000" height="525" alt="2027 教定區新春團拜《老壇主的時光廚房》">
     <h1>排練時間調查</h1>
-    <p class="lead">請在 <b>10/30（五）</b>前，勾選 11 月到 1 月中，你哪幾個週二、週六晚上可以來排練。我們會挑出最多人能到的日子，每個月排 2～3 次。</p>
+    <p class="lead">請在 <b>10/30（五）</b>前，勾選 11 月到 1 月中，你哪幾個週二、週六晚上可以來排練。我們會挑出最多人能到的日子，預計 11 月 2 次、12 月 3 次、1 月 3～4 次。</p>
     <p class="notice">只要時間可以，<b>請務必都選上「可以」</b>。將會挑人數集合最多的日子安排練習，選得越多，越容易排到大家都能來的時間。</p>
     <div class="facts">
       <span class="fact">時段：<b>週二晚上 7:30～9:30</b>、<b>週六晚上 6:30～9:30</b></span>
@@ -302,7 +308,7 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
     </div>
     <section class="step">
       <div class="step-head"><h2>各日期出席人數</h2><div class="viewtog" data-tog role="group" aria-label="顯示方式"></div></div>
-      <p class="hint">依「可以」的人數排名，同票再看「可能」；每月取前幾名當建議（11 月 2 天、12 月 3 天、1 月 3 天）。點「名單」看誰可以、誰不行。</p>
+      <p class="hint">依「可以」的人數排名，同票再看「可能」；每月取前幾名當建議（11 月 2 天、12 月 3 天、1 月 3～4 天）。點「名單」看誰可以、誰不行。</p>
       <div id="results"></div>
     </section>
     <section class="step">
@@ -345,7 +351,8 @@ var NOTE={
   '2026-12-22':'冬至',
   '2027-01-09':'年前最後一次壇辦，晚上排練＋年末聚餐'
 };
-var PICKS={'2026-11':2,'2026-12':3,'2027-01':3};
+var PICKS={'2026-11':2,'2026-12':3,'2027-01':4};
+var PICK_TXT={'2027-01':'3～4'};
 var GROUPS={drama:'戲劇組',door:'門神組',crew:'編舞／其他'};
 // 依角色與職司總表（10/28）；幕後道具、著裝人員暫不列入
 var MEMBERS=[
@@ -664,20 +671,27 @@ function tally(){
     });
     res[x.k]=t;
   });
-  var picks={};
+  // 每月取前 N 名；名額邊界若有同票（可以、可能人數都一樣），不硬挑，全部標成「同票」讓主辦決定
+  var picks={},ties={},tieNeed={};
   Object.keys(PICKS).forEach(function(ym){
-    OPEN.filter(function(x){return x.ym===ym;}).map(function(x){return x;})
-      .sort(function(a,b){var A=res[a.k],B=res[b.k];return (B.y.length-A.y.length)||(B.m.length-A.m.length)||(a.k<b.k?-1:1);})
-      .filter(function(x){return res[x.k].y.length+res[x.k].m.length>0;})
-      .slice(0,PICKS[ym]).forEach(function(x){picks[x.k]=true;});
+    var N=PICKS[ym],sc=function(x){return res[x.k].y.length*100+res[x.k].m.length;};
+    var arr=OPEN.filter(function(x){return x.ym===ym&&sc(x)>0;})
+      .sort(function(a,b){return (sc(b)-sc(a))||(a.k<b.k?-1:1);});
+    if(arr.length<=N){arr.forEach(function(x){picks[x.k]=true;});return;}
+    var cut=sc(arr[N-1]);
+    if(sc(arr[N])<cut){arr.slice(0,N).forEach(function(x){picks[x.k]=true;});return;}
+    var got=0;
+    arr.forEach(function(x){var v=sc(x);if(v>cut){picks[x.k]=true;got++;}else if(v===cut)ties[x.k]=true;});
+    tieNeed[ym]=N-got;
   });
-  return {people:people,res:res,picks:picks};
+  return {people:people,res:res,picks:picks,ties:ties,tieNeed:tieNeed};
 }
 var SEL=null;
+function pickBadge(T,k,top){if(T.picks[k])top.appendChild(el('span','badge','建議'));else if(T.ties[k])top.appendChild(el('span','badge tie','同票'));}
 function selDetail(T,total,box){
   var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
   var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
-  if(T.picks[SEL])top.appendChild(el('span','badge','建議'));
+  pickBadge(T,SEL,top);
   det.appendChild(top);
   if(x.note)det.appendChild(el('div','hint',x.note));
   var c=el('div','counts');
@@ -692,11 +706,11 @@ function selDetail(T,total,box){
 }
 function renderResultsWeek(T,total,box){
   if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
-  box.appendChild(el('p','hint','每格是「可以」的人數，紅框是建議排練日。點日期看名單。'));
+  box.appendChild(el('p','hint','每格是「可以」的人數，紅框是建議排練日，虛線框是同票、需要再決定。點日期看名單。'));
   weekGrid(box,function(x){
-    var t=T.res[x.k],b=el('button','slot'+(T.picks[x.k]?' pick':'')+(SEL===x.k?' sel':''));b.type='button';
+    var t=T.res[x.k],b=el('button','slot'+(T.picks[x.k]?' pick':T.ties[x.k]?' tie':'')+(SEL===x.k?' sel':''));b.type='button';
     var top=el('div','slot-top');top.appendChild(el('span','slot-d',x.m+'/'+x.day));
-    if(T.picks[x.k])top.appendChild(el('span','badge','建議'));
+    pickBadge(T,x.k,top);
     b.appendChild(top);
     b.appendChild(el('div','slot-t',wtime(x)));
     if(FULL_NOTE[x.k])b.appendChild(el('div','slot-note',x.note));
@@ -709,16 +723,16 @@ function renderResultsWeek(T,total,box){
     b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人');
     b.onclick=function(){SEL=x.k;renderResults();};
     return b;
-  },function(ym){return '建議排 '+PICKS[ym]+' 次';});
+  },function(ym){return '建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次';});
   selDetail(T,total,box);
 }
 function renderResultsCal(T,total,box){
   if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
-  box.appendChild(el('p','hint','格子越綠表示能來的人越多，紅框是建議排練日。點日期看名單。'));
+  box.appendChild(el('p','hint','格子越綠表示能來的人越多，紅框是建議排練日，虛線框是同票、需要再決定。點日期看名單。'));
   MONTHS.forEach(function(ym){
     var r=calGrid(ym,function(x,d){
       var t=T.res[x.k],ratio=total?t.y.length/total:0;
-      var b=el('button','cell r'+(T.picks[x.k]?' pick':'')+(SEL===x.k?' sel':''));b.type='button';
+      var b=el('button','cell r'+(T.picks[x.k]?' pick':T.ties[x.k]?' tie':'')+(SEL===x.k?' sel':''));b.type='button';
       if(ratio>0){b.style.background='color-mix(in srgb, var(--yes) '+Math.round(15+ratio*75)+'%, var(--surface))';if(ratio>0.5)b.style.color='#fff';}
       b.setAttribute('aria-label',label(x)+'：可以 '+t.y.length+' 人，可能 '+t.m.length+' 人');
       b.appendChild(el('span','dn',d));b.appendChild(el('span','st',t.y.length+' 人'));
@@ -726,12 +740,12 @@ function renderResultsCal(T,total,box){
       b.onclick=function(){SEL=x.k;renderResults();};
       return b;
     });
-    r.title.appendChild(el('span','hint','建議排 '+PICKS[ym]+' 次'));
+    r.title.appendChild(el('span','hint','建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次'));
     box.appendChild(r.sec);
   });
   var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
   var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
-  if(T.picks[SEL])top.appendChild(el('span','badge','建議'));
+  pickBadge(T,SEL,top);
   det.appendChild(top);
   if(x.note)det.appendChild(el('div','hint',x.note));
   var c=el('div','counts');
@@ -749,9 +763,20 @@ function renderResults(){
   $('sum-count').textContent=total;
   $('sum-of').textContent='名單 '+MEMBERS.length+' 人'+(total>MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length?'（含名單外）':'');
   var pk=$('sum-picks');pk.textContent='';
-  var pks=OPEN.filter(function(x){return T.picks[x.k];});
-  if(!pks.length)pk.appendChild(el('span','empty','還沒有人填寫'));
-  pks.forEach(function(x){pk.appendChild(el('span','pick',label(x)+' '+T.res[x.k].y.length+' 人'));});
+  var any=false;
+  Object.keys(PICKS).forEach(function(ym){
+    var ps=OPEN.filter(function(x){return x.ym===ym&&T.picks[x.k];});
+    var tl=OPEN.filter(function(x){return x.ym===ym&&T.ties[x.k];});
+    if(!ps.length&&!tl.length)return;any=true;
+    var line=el('div','pm-line');line.appendChild(el('span','pm-k',(+ym.slice(5))+' 月'));
+    ps.forEach(function(x){line.appendChild(el('span','pick',label(x)+' '+T.res[x.k].y.length+' 人'));});
+    if(tl.length){
+      line.appendChild(el('span','tie-k','同票 '+tl.length+' 天，再挑 '+T.tieNeed[ym]+' 天：'));
+      tl.forEach(function(x){line.appendChild(el('span','pick tie',label(x)+' '+T.res[x.k].y.length+' 人'));});
+    }
+    pk.appendChild(line);
+  });
+  if(!any)pk.appendChild(el('span','empty','還沒有人填寫'));
 
   var box=$('results');box.textContent='';
   if(VIEW==='cal'){renderResultsCal(T,total,box);}else if(VIEW==='list'){renderResultsWeek(T,total,box);}else{
@@ -759,14 +784,14 @@ function renderResults(){
   months.forEach(function(ym){
     var sec=el('div','month');
     var t=el('div','month-title');t.appendChild(el('h3',null,(+ym.slice(5))+' 月'));
-    t.appendChild(el('span','hint','建議排 '+PICKS[ym]+' 次'));sec.appendChild(t);
+    t.appendChild(el('span','hint','建議排 '+(PICK_TXT[ym]||PICKS[ym])+' 次'));sec.appendChild(t);
     OPEN.filter(function(x){return x.ym===ym;}).forEach(function(x){
       var r=T.res[x.k],row=el('div','res-row');
       var cal=el('div','cal');cal.appendChild(el('div','m',x.m+'月'));cal.appendChild(el('div','d',x.day));cal.appendChild(el('div','w','週'+WD[x.w]));
       row.appendChild(cal);
       var main=el('div','res-main');
       var top=el('div','res-top');top.appendChild(el('span',null,'週'+WD[x.w]+'晚上'));
-      if(T.picks[x.k])top.appendChild(el('span','badge','建議'));
+      pickBadge(T,x.k,top);
       if(x.note)top.appendChild(el('span','hint',x.note));
       main.appendChild(top);
       var bar=el('div','bar');bar.setAttribute('aria-hidden','true');
