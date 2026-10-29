@@ -146,6 +146,21 @@ textarea{width:100%;min-height:72px;resize:vertical}
 details{font-size:14px}
 details summary{cursor:pointer;color:var(--muted)}
 .who{display:grid;gap:2px;margin-top:4px}
+.counts .cn{color:var(--accent);font-weight:700}
+.pc-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12px}
+.pc-legend .pc{font-size:12px;padding:1px 7px}
+.grp{margin-top:12px}
+.grp-h{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;font-size:15px}
+.grp-h span{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pcs{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pc{display:inline-flex;align-items:baseline;gap:4px;border-radius:6px;padding:3px 9px;font-size:14px;border:1px solid transparent;line-height:1.5}
+.pc .mk{font-weight:700}
+.pc small{font-size:12px;opacity:.8}
+.pc .dnt{font-size:12px;color:var(--ink)}
+.pc.s-y{background:var(--yes-soft);color:var(--yes);border-color:var(--yes)}
+.pc.s-m{background:var(--maybe-soft);color:#7A4F0E;border-color:var(--maybe)}
+.pc.s-n{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}
+.pc.s-x{background:var(--surface);color:var(--muted);border:1px dashed #B9C0BA}
 .who b{font-weight:500}
 .pending{display:flex;flex-wrap:wrap;gap:6px}
 .nt-list{display:grid;gap:8px;margin-top:8px}
@@ -725,21 +740,49 @@ function tally(){
 }
 var SEL=null;
 function pickBadge(T,k,top){if(T.picks[k])top.appendChild(el('span','badge','建議'));else if(T.ties[k])top.appendChild(el('span','badge tie','同票'));}
+// 點日期後的名單：依組別列出每個人（含職司），用顏色標可以／可能／不行／未填，看得出哪一組受影響
+var ST_TXT={y:'可以',m:'可能',n:'不行',x:'未填'},ST_MK={y:'✓',m:'△',n:'✗',x:'－'};
+function whoByGroup(t,det){
+  var st={};t.y.forEach(function(n){st[n]='y';});t.m.forEach(function(n){st[n]='m';});t.n.forEach(function(n){st[n]='n';});
+  var role={},grp={},order=[];
+  MEMBERS.forEach(function(m){role[m[0]]=m[2]||'';grp[m[0]]=m[1];order.push(m[0]);});
+  Object.keys(rows).forEach(function(id){var r=rows[id];if(r&&r.name&&!grp[r.name]){grp[r.name]=GROUPS[r.group]?r.group:'crew';order.push(r.name);}});
+  var all={y:0,m:0,n:0,x:0};order.forEach(function(n){all[st[n]||'x']++;});
+  var c=el('div','counts');
+  c.appendChild(el('span','cy','可以 '+all.y));c.appendChild(el('span','cm','可能 '+all.m));
+  c.appendChild(el('span','cn','不行 '+all.n));c.appendChild(el('span',null,'未填 '+all.x));
+  det.appendChild(c);
+  var lg=el('div','pc-legend');
+  ['y','m','n','x'].forEach(function(k){var s=el('span','pc s-'+k);s.appendChild(el('span','mk',ST_MK[k]));s.appendChild(document.createTextNode(ST_TXT[k]));lg.appendChild(s);});
+  det.appendChild(lg);
+  Object.keys(GROUPS).forEach(function(g){
+    var names=order.filter(function(n){return grp[n]===g;});if(!names.length)return;
+    var gc={y:0,m:0,n:0,x:0};names.forEach(function(n){gc[st[n]||'x']++;});
+    var sec=el('div','grp');
+    var h=el('div','grp-h');h.appendChild(el('b',null,GROUPS[g]));
+    h.appendChild(el('span',null,'可以 '+gc.y+'／'+names.length+(gc.m?'・可能 '+gc.m:'')+(gc.n?'・不行 '+gc.n:'')+(gc.x?'・未填 '+gc.x:'')));
+    sec.appendChild(h);
+    var pcs=el('div','pcs');
+    names.forEach(function(n){
+      var k=st[n]||'x',chip=el('span','pc s-'+k);
+      chip.title=n+(role[n]?'（'+role[n]+'）':'')+'：'+(k==='x'&&rows[idOf(n)]?'這天沒選':ST_TXT[k]);
+      chip.appendChild(el('span','mk',ST_MK[k]));
+      chip.appendChild(document.createTextNode(n));
+      if(role[n])chip.appendChild(el('small',null,role[n]));
+      if(t.dn[n])chip.appendChild(el('span','dnt','（'+t.dn[n]+'）'));
+      pcs.appendChild(chip);
+    });
+    sec.appendChild(pcs);det.appendChild(sec);
+  });
+}
 function selDetail(T,total,box){
   var x=BYKEY[SEL],t=T.res[SEL],det=el('div','caldetail');
   var top=el('div','res-top');top.appendChild(el('h3',null,label(x)+' 晚上'));
   pickBadge(T,SEL,top);
   det.appendChild(top);
   if(x.note)det.appendChild(el('div','hint',x.note));
-  var c=el('div','counts');
-  c.appendChild(el('span','cy','可以 '+t.y.length));c.appendChild(el('span','cm','可能 '+t.m.length));c.appendChild(el('span',null,'不行 '+t.n.length));
-  c.appendChild(el('span',null,'戲劇 '+t.g.drama[0]+'/'+t.g.drama[1]+'・門神 '+t.g.door[0]+'/'+t.g.door[1]));
-  det.appendChild(c);
-  var who=el('div','who');
-  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].map(function(n){return t.dn[n]?n+'（'+t.dn[n]+'）':n;}).join('、')));who.appendChild(l);});
-  Object.keys(t.dn).filter(function(n){return t.y.indexOf(n)<0&&t.m.indexOf(n)<0&&t.n.indexOf(n)<0;}).forEach(function(n){var l=el('div');l.appendChild(el('b',null,'備註：'));l.appendChild(document.createTextNode(n+'（'+t.dn[n]+'）'));who.appendChild(l);});
-  if(!total)who.appendChild(el('div','empty','還沒有人填寫'));
-  det.appendChild(who);box.appendChild(det);
+  whoByGroup(t,det);
+  box.appendChild(det);
 }
 function renderResultsWeek(T,total,box){
   if(!SEL||!T.res[SEL]){var p=OPEN.filter(function(x){return T.picks[x.k];})[0]||OPEN[0];SEL=p.k;}
@@ -785,15 +828,8 @@ function renderResultsCal(T,total,box){
   pickBadge(T,SEL,top);
   det.appendChild(top);
   if(x.note)det.appendChild(el('div','hint',x.note));
-  var c=el('div','counts');
-  c.appendChild(el('span','cy','可以 '+t.y.length));c.appendChild(el('span','cm','可能 '+t.m.length));c.appendChild(el('span',null,'不行 '+t.n.length));
-  c.appendChild(el('span',null,'戲劇 '+t.g.drama[0]+'/'+t.g.drama[1]+'・門神 '+t.g.door[0]+'/'+t.g.door[1]));
-  det.appendChild(c);
-  var who=el('div','who');
-  [['可以',t.y],['可能',t.m],['不行',t.n]].forEach(function(p){if(!p[1].length)return;var l=el('div');l.appendChild(el('b',null,p[0]+'：'));l.appendChild(document.createTextNode(p[1].map(function(n){return t.dn[n]?n+'（'+t.dn[n]+'）':n;}).join('、')));who.appendChild(l);});
-  Object.keys(t.dn).filter(function(n){return t.y.indexOf(n)<0&&t.m.indexOf(n)<0&&t.n.indexOf(n)<0;}).forEach(function(n){var l=el('div');l.appendChild(el('b',null,'備註：'));l.appendChild(document.createTextNode(n+'（'+t.dn[n]+'）'));who.appendChild(l);});
-  if(!total)who.appendChild(el('div','empty','還沒有人填寫'));
-  det.appendChild(who);box.appendChild(det);
+  whoByGroup(t,det);
+  box.appendChild(det);
 }
 function renderResults(){
   var T=tally(),total=T.people.length;
