@@ -83,6 +83,10 @@ section.step{background:var(--surface);border:1px solid var(--line);border-radiu
 .other input,.other select,textarea{font:inherit;font-size:15px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .other input{width:9em}
 .chosen{font-size:14px;color:var(--yes);font-weight:500}
+.confirm-box{margin-top:12px;background:var(--maybe-soft);border:2px solid var(--maybe);border-radius:10px;padding:12px 14px;font-size:15px;display:grid;gap:10px;max-width:520px}
+.confirm-box b{color:var(--maybe)}
+.confirm-btns{display:flex;flex-wrap:wrap;gap:10px}
+.confirm-btns .btn.primary{font-size:15px;padding:8px 16px}
 
 .month{display:grid;gap:8px}
 .month + .month{margin-top:10px}
@@ -265,7 +269,7 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
   <main id="view-fill" role="tabpanel" aria-labelledby="tab-fill">
     <section class="step">
       <div class="step-head"><span class="step-no">一</span><h2>你是誰？</h2></div>
-      <p class="hint">從下拉選單選自己的名字。後面有「✓ 已填」的人已經填過，選了會載入上次的答案，可以直接修改日期。家長可以幫小朋友填。</p>
+      <p class="hint">從下拉選單選自己的名字。後面有「✓ 已填」的人已經填過，選了會先請你確認是本人，再載入上次的答案修改。家長可以幫小朋友填。</p>
       <div class="progress" id="fill-count"></div>
       <div id="names"></div>
       <div class="other">
@@ -277,6 +281,13 @@ button.slot{appearance:none;font:inherit;text-align:left;cursor:pointer;color:va
           <option value="crew" selected>編舞／其他</option>
         </select>
         <button class="btn" id="other-ok" type="button">用這個名字</button>
+      </div>
+      <div class="confirm-box" id="confirm-box" role="alertdialog" aria-labelledby="confirm-msg" hidden>
+        <div id="confirm-msg"></div>
+        <div class="confirm-btns">
+          <button class="btn primary" type="button" id="confirm-yes"></button>
+          <button class="btn" type="button" id="confirm-no">選錯了，重選</button>
+        </div>
       </div>
       <div class="chosen" id="chosen" hidden></div>
     </section>
@@ -437,16 +448,38 @@ function renderNames(){
     sel.onchange=function(){var o=sel.options[sel.selectedIndex];if(o&&o.value)choose(o.value,o.dataset.g);};
     box.appendChild(sel);
   }
-  $('name-select').value=me?me.name:'';
+  $('name-select').value=me?me.name:(pendingName||'');
   var n=MEMBERS.filter(function(m){return rows[idOf(m[0])];}).length;
   $('fill-count').textContent='名單已填 '+n+' / '+MEMBERS.length+' 人';
 }
 var DN='#'; // 每天的備註存在 answers[日期+'#']
 var dnOpen={};
 function dnOf(p,k){return p&&p.answers&&typeof p.answers[k+DN]==='string'?p.answers[k+DN]:'';}
-function choose(name,group){
+var okNames={},pendingName='';  // 這次開網頁已確認過本人的名字（不用一直重複確認）
+function hideConfirm(){$('confirm-box').hidden=true;pendingName='';}
+function choose(name,group,confirmed){
   if(dirty&&me&&me.name!==name&&!choose._warned){choose._warned=true;toast('你剛才的勾選還沒送出，再選一次就會切換');renderNames();return;}
   choose._warned=false;
+  var r0=rows[idOf(name)];
+  if(r0&&!confirmed&&!okNames[name]&&!(me&&me.name===name)){
+    // 已經填過的人：先停在確認畫面，避免不小心選到別人的名字、改掉別人的答案
+    me=null;answers={};dnOpen={};note='';$('note').value='';dirty=false;
+    $('chosen').hidden=true;pendingName=name;
+    renderNames();renderDates();
+    $('name-select').value=name;
+    $('confirm-msg').innerHTML='';
+    var m=$('confirm-msg');
+    m.appendChild(document.createTextNode('「'));m.appendChild(el('b',null,name));
+    m.appendChild(document.createTextNode('」已經填過了'+(r0.updatedAt?'（'+fmt(r0.updatedAt)+'）':'')+'。請確認你是 '+name+' 本人（或幫他填寫的家人），再修改答案，以免改到別人的資料。'));
+    $('confirm-yes').textContent='是，我是 '+name;
+    $('confirm-yes').onclick=function(){okNames[name]=true;hideConfirm();choose(name,group,true);};
+    $('confirm-box').hidden=false;
+    $('confirm-box').scrollIntoView({behavior:'smooth',block:'center'});
+    $('confirm-yes').focus({preventScroll:true});
+    return;
+  }
+  hideConfirm();
+  if(r0)okNames[name]=true;
   me={name:name,group:group};
   var r=rows[idOf(name)];
   answers=r&&r.answers?Object.assign({},r.answers):{};dnOpen={};
@@ -455,6 +488,10 @@ function choose(name,group){
   c.textContent=r?('✓ '+name+(r.updatedAt?'：已在 '+fmt(r.updatedAt)+' 填過':'：已填過')+'，下面是你上次的答案，改好後按「更新我的答案」'):('✓ '+name+'：請往下勾選日期');
   renderNames();renderDates();
 }
+$('confirm-no').onclick=function(){
+  hideConfirm();$('name-select').value='';
+  $('name-select').focus();toast('請重新選擇你的名字');
+};
 $('other-ok').onclick=function(){
   var n=$('other-name').value.trim().replace(/\s+/g,'');
   if(!n){toast('請先輸入姓名');$('other-name').focus();return;}
