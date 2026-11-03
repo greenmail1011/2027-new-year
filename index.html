@@ -19,11 +19,11 @@
 <meta name="twitter:title" content="老壇主的時光廚房｜2027 新春團拜排練本">
 <meta name="twitter:description" content="查看完整劇本、演出流程與 M1～M5 音樂試聽。">
 <meta name="twitter:image" content="og-image.jpg">
-<link rel="prefetch" href="music/M1-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M2-v3-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M3-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M4-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
-<link rel="prefetch" href="music/M5-web.mp3?v=20261006c" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M1_v2_A-web.mp3?v=20261103a" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M2-v3-web.mp3?v=20261103a" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M3-web.mp3?v=20261103a" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M4-web.mp3?v=20261103a" as="audio" type="audio/mpeg">
+<link rel="prefetch" href="music/M5-web.mp3?v=20261103a" as="audio" type="audio/mpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap">
@@ -337,8 +337,12 @@ function shell(introHtml){
 var MUSIC_NAMES={1:'M1｜門神威武版',2:'M2｜大掃除恰恰',3:'M3｜灶腳襯底',4:'M4｜過場短句',5:'M5｜歡樂門神壓軸'};
 var MUSIC_FILES={1:'M1-web.mp3',2:'M2-v3-web.mp3',3:'M3-web.mp3',4:'M4-web.mp3',5:'M5-web.mp3'};
 // 換任何音檔後，把 MUSIC_REV 改成新的值（例如日期＋字母），所有人會立刻抓新檔；開頭的 prefetch 連結也一起改
-var MUSIC_REV='20261006c';
-var MUSIC_VERSIONS={2:[
+var MUSIC_REV='20261103a';
+var MUSIC_VERSIONS={1:[
+  {v:'大旗A',file:'M1_v2_A-web.mp3',note:'大旗A｜11/3 依第 4 次會議：開場即震撼→中段稍弱→尾段大旗再加強（2:29）'},
+  {v:'大旗B',file:'M1_v2_B-web.mp3',note:'大旗B｜同一份提示詞的另一首（2:30）'},
+  {v:'原版',file:'M1-web.mp3',note:'原版｜原本的門神威武版（2:28）'}],
+  2:[
   {v:'v3',file:'M2-v3-web.mp3',note:'v3｜依照 v2 的風格，結合 v1 的朗朗上口（最新生成）'},
   {v:'v2',file:'M2-v2-web.mp3',note:'v2｜合併節奏與過年感，但感覺不夠重複（不夠洗腦）'},
   {v:'v1',file:'M2-v1-web.mp3',note:'v1｜晴宣朗朗上口版，但可增加節奏，比較好排舞'}]};
